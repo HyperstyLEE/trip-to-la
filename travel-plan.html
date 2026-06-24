@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>南加州亲子自驾 · SoCal Family Road Trip 2026</title>
+<meta name="description" content="圣克拉拉 → 迪士尼 → 洛杉矶 → 圣地亚哥 · 8天7晚亲子自驾攻略" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Work+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --sun: #ff8c42;
+    --sun-deep: #f2660a;
+    --amber: #f6b13c;
+    --leaf: #4c9a6b;
+    --leaf-deep: #2f7350;
+    --ink: #2a2018;
+    --ink-soft: #6b5d50;
+    --paper: #fff8ef;
+    --card: #ffffff;
+    --line: #efe3d2;
+    --shadow: 0 10px 30px -12px rgba(120, 72, 20, .28);
+    --shadow-lg: 0 24px 60px -20px rgba(120, 72, 20, .38);
+    --radius: 20px;
+    --maxw: 1080px;
+  }
+  :root[data-theme="dark"] {
+    --ink: #f3e9db;
+    --ink-soft: #b9a892;
+    --paper: #17120d;
+    --card: #211a13;
+    --line: #34291d;
+    --shadow: 0 10px 30px -12px rgba(0,0,0,.6);
+    --shadow-lg: 0 24px 60px -20px rgba(0,0,0,.7);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Work Sans', 'Noto Sans SC', system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    transition: background .4s ease, color .4s ease;
+  }
+  h1, h2, h3, .serif { font-family: 'Playfair Display', 'Noto Sans SC', serif; }
+  .en { font-family: 'Work Sans', sans-serif; color: var(--ink-soft); font-weight: 400; }
+  a { color: var(--sun-deep); }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--paper) 86%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; gap: 16px; height: 60px; }
+  .brand { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.1rem; letter-spacing: .3px; white-space: nowrap; }
+  .brand span { color: var(--sun-deep); }
+  .nav-links { display: flex; gap: 4px; margin-left: auto; flex-wrap: nowrap; overflow-x: auto; }
+  .nav-links a { color: var(--ink-soft); text-decoration: none; font-size: .82rem; font-weight: 600; padding: 7px 11px; border-radius: 999px; white-space: nowrap; transition: .2s; }
+  .nav-links a:hover { background: var(--line); color: var(--ink); }
+  .theme-btn { flex: none; width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line); background: var(--card); cursor: pointer; font-size: 1.05rem; line-height: 1; display: grid; place-items: center; transition: .2s; }
+  .theme-btn:hover { transform: rotate(-15deg) scale(1.08); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative; padding: 70px 0 60px;
+    background:
+      radial-gradient(120% 90% at 80% -10%, rgba(246,177,60,.45), transparent 55%),
+      radial-gradient(120% 100% at 0% 0%, rgba(76,154,107,.30), transparent 50%),
+      linear-gradient(160deg, #ffb15c 0%, #ff8c42 38%, #f2660a 100%);
+    color: #fff8ef; overflow: hidden;
+  }
+  :root[data-theme="dark"] .hero { color: #fff3e2; }
+  .hero::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(60% 50% at 50% 120%, rgba(0,0,0,.25), transparent);
+  }
+  .palm { position: absolute; font-size: 7rem; opacity: .16; user-select: none; }
+  .palm.p1 { top: 8px; right: 24px; transform: rotate(8deg); }
+  .palm.p2 { bottom: -18px; left: 8px; font-size: 5rem; transform: rotate(-12deg); }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: .8rem; letter-spacing: 2px; text-transform: uppercase; background: rgba(255,255,255,.18); padding: 6px 14px; border-radius: 999px; backdrop-filter: blur(4px); }
+  .hero h1 { font-size: clamp(2.4rem, 7vw, 4.6rem); font-weight: 900; line-height: 1.04; margin: 18px 0 6px; text-shadow: 0 4px 24px rgba(120,50,0,.3); }
+  .hero h1 .scriptline { font-style: italic; font-weight: 500; font-size: .5em; display: block; opacity: .95; }
+  .hero-sub { font-size: 1.05rem; max-width: 640px; opacity: .95; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .chip { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.28); padding: 8px 15px; border-radius: 999px; font-size: .86rem; font-weight: 500; backdrop-filter: blur(4px); display: inline-flex; gap: 7px; align-items: center; }
+
+  /* countdown */
+  .countdown { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+  .cd-box { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3); border-radius: 16px; padding: 12px 18px; min-width: 78px; text-align: center; backdrop-filter: blur(6px); }
+  .cd-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2rem; line-height: 1; }
+  .cd-label { font-size: .68rem; letter-spacing: 1.5px; text-transform: uppercase; opacity: .85; margin-top: 5px; }
+  .cd-tag { margin-top: 14px; font-size: .92rem; font-weight: 600; }
+
+  /* ---------- SECTION ---------- */
+  section { padding: 56px 0; }
+  .sec-head { margin-bottom: 28px; }
+  .sec-kicker { color: var(--sun-deep); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: .76rem; }
+  .sec-head h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 800; margin-top: 4px; }
+  .sec-head p { color: var(--ink-soft); margin-top: 6px; max-width: 640px; }
+
+  /* ---------- PLAN TABS ---------- */
+  .plan-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .plan-tab {
+    flex: 1 1 220px; text-align: left; cursor: pointer; border: 1.5px solid var(--line);
+    background: var(--card); border-radius: var(--radius); padding: 16px 18px; transition: .25s; position: relative;
+  }
+  .plan-tab:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .plan-tab.active { border-color: var(--sun); box-shadow: var(--shadow); background: linear-gradient(165deg, color-mix(in srgb, var(--sun) 14%, var(--card)), var(--card)); }
+  .plan-tab .pt-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; }
+  .plan-tab .pt-en { font-size: .78rem; color: var(--ink-soft); }
+  .plan-tab .pt-desc { font-size: .82rem; color: var(--ink-soft); margin-top: 7px; }
+  .rec-flag { position: absolute; top: -10px; right: 14px; background: var(--leaf); color: #fff; font-size: .68rem; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: .5px; }
+  .plan-pace { margin: 14px 0 4px; font-size: .85rem; color: var(--ink-soft); display: flex; align-items: center; gap: 8px; }
+
+  /* ---------- TIMELINE ---------- */
+  .timeline { position: relative; margin-top: 10px; }
+  .day { position: relative; padding: 22px 0 4px 0; }
+  .day-card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .day-top { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; border-left: 5px solid var(--sun); }
+  .day-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.6rem; color: var(--sun-deep); min-width: 58px; line-height: 1; }
+  .day-num small { display: block; font-size: .6rem; letter-spacing: 1px; color: var(--ink-soft); font-family: 'Work Sans'; font-weight: 600; margin-top: 3px; }
+  .day-titlewrap { flex: 1; }
+  .day-titlewrap h3 { font-size: 1.12rem; font-weight: 700; }
+  .day-titlewrap .day-en { font-size: .8rem; }
+  .day-date { font-size: .78rem; color: var(--ink-soft); font-weight: 600; }
+  .day-badge { font-size: .72rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; background: color-mix(in srgb, var(--amber) 24%, transparent); color: var(--sun-deep); }
+  .chev { transition: .3s; color: var(--ink-soft); font-size: 1.1rem; }
+  .day.open .chev { transform: rotate(180deg); }
+  .day-body { max-height: 0; overflow: hidden; transition: max-height .45s ease; }
+  .day.open .day-body { max-height: 3000px; }
+  .seg { display: grid; grid-template-columns: 64px 1fr; gap: 12px; padding: 14px 20px; border-top: 1px dashed var(--line); }
+  .seg-time { text-align: center; }
+  .seg-ic { font-size: 1.3rem; }
+  .seg-clock { font-size: .68rem; color: var(--ink-soft); font-weight: 600; margin-top: 2px; }
+  .seg-name { font-weight: 600; }
+  .seg-name .nm-en { font-weight: 400; color: var(--ink-soft); font-size: .85em; }
+  .seg-meta { font-size: .8rem; color: var(--ink-soft); margin-top: 2px; }
+  .seg-note { font-size: .82rem; margin-top: 6px; }
+  .kid { color: var(--leaf-deep); font-weight: 600; }
+  :root[data-theme="dark"] .kid { color: #7ec79a; }
+  .xhs { display: inline-flex; align-items: flex-start; gap: 6px; margin-top: 7px; font-size: .8rem; background: color-mix(in srgb, #ff2e51 12%, transparent); color: #d11e3f; border-radius: 10px; padding: 6px 10px; }
+  :root[data-theme="dark"] .xhs { color: #ff7d96; }
+  .xhs b { white-space: nowrap; }
+  .day-foot { padding: 13px 20px; background: color-mix(in srgb, var(--leaf) 9%, transparent); font-size: .84rem; border-top: 1px solid var(--line); }
+  .day-foot .hotel { font-weight: 600; }
+
+  /* ---------- CARDS GRID ---------- */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 17px;
+    box-shadow: var(--shadow); transition: .25s; display: flex; flex-direction: column;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+  .heat { font-size: .7rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; align-self: flex-start; }
+  .heat.hot { background: #ffe3d1; color: #e0440a; }
+  .heat.gem { background: #e2efe6; color: var(--leaf-deep); }
+  :root[data-theme="dark"] .heat.hot { background: #46210f; color: #ff9b62; }
+  :root[data-theme="dark"] .heat.gem { background: #1d3526; color: #84cda0; }
+  .card h4 { font-size: 1.05rem; font-weight: 700; margin: 9px 0 2px; }
+  .card .c-en { font-size: .78rem; color: var(--ink-soft); }
+  .card .c-area { font-size: .74rem; color: var(--sun-deep); font-weight: 600; margin-top: 6px; }
+  .card .c-body { font-size: .85rem; color: var(--ink-soft); margin-top: 8px; }
+  .food-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .tag { font-size: .72rem; background: var(--line); color: var(--ink-soft); padding: 3px 9px; border-radius: 999px; font-weight: 600; }
+  .tag.price { background: color-mix(in srgb, var(--amber) 26%, transparent); color: var(--sun-deep); }
+  .must { font-size: .82rem; margin-top: 9px; }
+  .must b { color: var(--ink); }
+  .xhs-likes { margin-top: 9px; font-size: .76rem; color: #d11e3f; font-weight: 600; }
+  :root[data-theme="dark"] .xhs-likes { color: #ff7d96; }
+
+  /* ---------- CAFES ---------- */
+  .cafe-card .vibe { font-size: .8rem; color: var(--sun-deep); font-weight: 600; margin-top: 6px; }
+  .cafe-card .line { font-size: .84rem; margin-top: 8px; color: var(--ink-soft); }
+  .cafe-card .line b { color: var(--ink); }
+  .vlog-box { margin-top: 24px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .vlog-title { font-weight: 700; margin-bottom: 12px; }
+  .vlog-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+  .vlog-list a { display: block; text-decoration: none; padding: 11px 13px; border: 1px solid var(--line); border-radius: 12px; transition: .2s; }
+  .vlog-list a:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--sun); }
+  .vlog-list .vt { font-weight: 600; font-size: .86rem; color: var(--ink); }
+  .vlog-list .vc { font-size: .76rem; color: var(--ink-soft); margin-top: 3px; }
+
+  /* ---------- CHARGING ---------- */
+  .map-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .map-btn { text-decoration: none; font-weight: 600; font-size: .85rem; padding: 10px 16px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); transition: .2s; }
+  .map-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .map-btn.primary { background: linear-gradient(135deg, var(--sun), var(--sun-deep)); color: #fff; border-color: transparent; }
+  .lost-hills { margin-top: 24px; border-radius: var(--radius); padding: 26px 24px; color: #fff;
+    background: linear-gradient(135deg, #1f2a44 0%, #2f7350 100%); box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+  .lost-hills::after { content: "⚡"; position: absolute; right: -8px; bottom: -26px; font-size: 9rem; opacity: .12; }
+  .lh-badge { display: inline-block; background: var(--amber); color: #2a2018; font-weight: 700; font-size: .74rem; padding: 5px 12px; border-radius: 999px; }
+  .lost-hills h3 { font-size: 1.5rem; font-weight: 800; margin: 12px 0 4px; }
+  .lh-sub { opacity: .92; font-size: .88rem; }
+  .lh-stats { display: flex; flex-wrap: wrap; gap: 24px; margin: 18px 0; }
+  .lh-stats div { display: flex; flex-direction: column; }
+  .lh-stats b { font-family: 'Playfair Display', serif; font-size: 1.9rem; line-height: 1; }
+  .lh-stats span { font-size: .72rem; opacity: .85; margin-top: 4px; }
+  .lh-desc { font-size: .9rem; opacity: .95; max-width: 660px; margin-bottom: 16px; position: relative; z-index: 1; }
+  .lost-hills .map-btn { position: relative; z-index: 1; background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.35); color: #fff; }
+  .charge-card .amen { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .charge-card .yes { background: #e2efe6; color: var(--leaf-deep); font-size: .72rem; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+  :root[data-theme="dark"] .charge-card .yes { background: #1d3526; color: #84cda0; }
+
+  /* ---------- PRACTICAL ---------- */
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .info-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .info-card h4 { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .info-card ul { list-style: none; font-size: .86rem; }
+  .info-card li { padding: 6px 0; border-bottom: 1px dashed var(--line); color: var(--ink-soft); }
+  .info-card li:last-child { border: 0; }
+  .info-card li b { color: var(--ink); font-weight: 600; }
+  .info-card a { font-weight: 600; text-decoration: none; }
+  .info-card a:hover { text-decoration: underline; }
+
+  /* ---------- CHECKLIST ---------- */
+  .check-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .check-col { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; box-shadow: var(--shadow); }
+  .check-col h4 { font-size: .95rem; margin-bottom: 8px; display: flex; gap: 7px; align-items: center; }
+  .check-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; cursor: pointer; font-size: .88rem; user-select: none; }
+  .check-item input { display: none; }
+  .box { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line); flex: none; display: grid; place-items: center; transition: .2s; font-size: .8rem; color: #fff; }
+  .check-item input:checked + .box { background: var(--leaf); border-color: var(--leaf); }
+  .check-item input:checked ~ .ci-label { text-decoration: line-through; color: var(--ink-soft); }
+  .progress-bar { height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; margin: 4px 0 18px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--leaf), var(--amber)); width: 0; transition: width .4s; }
+
+  /* ---------- FOOTER ---------- */
+  footer { background: var(--ink); color: var(--paper); padding: 40px 0; margin-top: 30px; text-align: center; }
+  :root[data-theme="dark"] footer { background: #0d0a07; }
+  footer .f-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
+  footer p { opacity: .7; font-size: .84rem; margin-top: 8px; }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 560px) {
+    .nav-links { display: none; }
+    .seg { grid-template-columns: 50px 1fr; }
+    .cd-box { min-width: 64px; padding: 10px 12px; }
+    .cd-num { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="wrap nav-inner">
+    <div class="brand">SoCal<span>·</span>2026 <span style="font-size:.8rem;font-weight:400">南加亲子自驾</span></div>
+    <div class="nav-links">
+      <a href="#plans">方案 Plans</a>
+      <a href="#itinerary">行程 Itinerary</a>
+      <a href="#spots">必打卡 Spots</a>
+      <a href="#food">美食 Food</a>
+      <a href="#cafes">咖啡 Cafés</a>
+      <a href="#charging">超充 Charging</a>
+      <a href="#info">实用 Info</a>
+      <a href="#pack">打包 Pack</a>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="切换主题 / Toggle theme">🌙</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="palm p1">🌴</div>
+  <div class="palm p2">🌴</div>
+  <div class="wrap">
+    <span class="eyebrow">🚗 Santa Clara → Anaheim → LA → San Diego</span>
+    <h1>南加州亲子自驾<span class="scriptline">A Sunny SoCal Family Road Trip</span></h1>
+    <p class="hero-sub">8 天 7 晚 · 迪士尼双园 · 洛杉矶星空 · 圣地亚哥海湾 —— 节奏 chill，为孩子而行。</p>
+    <div class="hero-meta">
+      <span class="chip">📅 6月27日 – 7月4日 · 2026</span>
+      <span class="chip">👨‍👩‍👧 3 大 1 小 · 3 Adults + 1 Kid</span>
+      <span class="chip">🏠 Base: Santa Clara, CA</span>
+      <span class="chip">⚡ Tesla Model 3 LR · 自驾</span>
+    </div>
+    <div class="countdown" id="countdown" aria-label="出发倒计时">
+      <div class="cd-box"><div class="cd-num" id="cd-d">–</div><div class="cd-label">Days 天</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-h">–</div><div class="cd-label">Hrs 时</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-m">–</div><div class="cd-label">Min 分</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-s">–</div><div class="cd-label">Sec 秒</div></div>
+    </div>
+    <div class="cd-tag" id="cd-tag">距离出发还有… ✨</div>
+  </div>
+</header>
+
+<!-- PLANS -->
+<section id="plans">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Choose Your Vibe</div>
+      <h2>三套方案 · A / B / C</h2>
+      <p>酒店与路线已订好、固定不变；三套方案只改变<b>每天怎么玩</b>。点击切换，下方行程会随之更新。</p>
+    </div>
+    <div class="plan-tabs reveal" id="planTabs"></div>
+    <div class="plan-pace" id="planPace"></div>
+  </div>
+</section>
+
+<!-- ITINERARY -->
+<section id="itinerary" style="padding-top:8px">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Day by Day</div>
+      <h2>每日行程时间轴</h2>
+      <p>点击每一天展开 / 收起。🌄 上午 · 🍽️ 午餐 · ☀️ 下午 · 🌙 晚餐 · 🏨 住宿。</p>
+    </div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+<!-- SPOTS -->
+<section id="spots">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Must-Visit</div>
+      <h2>必打卡景点 🔥</h2>
+      <p><span class="heat hot" style="display:inline-block">🔥 爆款</span> 人气最高 · <span class="heat gem" style="display:inline-block">⭐ 小众</span> 当地人私藏。热度为小红书 / 大众点评的综合人气指标，仅供参考。</p>
+    </div>
+    <div class="grid" id="spotGrid"></div>
+  </div>
+</section>
+
+<!-- FOOD -->
+<section id="food">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Eat Well</div>
+      <h2>美食地图 🍜</h2>
+      <p>每天都有明确的午餐 + 晚餐推荐。人均为大致预算（含税前，不含小费），❤️ 热度为社媒人气参考值。</p>
+    </div>
+    <div class="grid" id="foodGrid"></div>
+  </div>
+</section>
+
+<!-- CAFES -->
+<section id="cafes">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Café Hopping</div>
+      <h2>☕ 网红咖啡馆打卡</h2>
+      <p>为年轻人 &amp; 爱拍照的你专门挑的高颜值咖啡馆——每家都标了<b>招牌饮品</b>和<b>打卡机位</b>。早上人少最好拍。</p>
+    </div>
+    <div class="grid" id="cafeGrid"></div>
+    <div class="vlog-box reveal">
+      <div class="vlog-title">📺 Vlog 灵感参考 · YouTube Inspiration</div>
+      <div class="vlog-list" id="vlogList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARGING -->
+<section id="charging">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Supercharge</div>
+      <h2>⚡ 沿途超充地图 · Tesla Model 3 LR</h2>
+      <p>实际高速续航约 <b>270–300 mi</b>，建议按 10%→80% 规划每段 180–230 mi。长途日（Day 1 / Day 8）各安排 1–2 次超充，优先选<b>带厕所 + In-N-Out</b> 的站点边吃边充。</p>
+      <div class="map-btns">
+        <a class="map-btn primary" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/Santa+Clara,+CA/Tesla+Supercharger+Kettleman+City+CA/Tesla+Supercharger+Oasis+Lost+Hills+CA/Tesla+Supercharger+Tejon+Ranch+Lebec+CA/Anaheim,+CA">🗺️ 去程超充路线（Google 地图）</a>
+        <a class="map-btn" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/San+Diego,+CA/Tesla+Supercharger+Tejon+Ranch+Lebec+CA/Tesla+Supercharger+Kettleman+City+CA/Santa+Clara,+CA">🗺️ 返程超充路线</a>
+        <a class="map-btn" target="_blank" rel="noopener" href="https://www.tesla.com/findus">📍 Tesla 官方超充地图</a>
+      </div>
+    </div>
+
+    <div class="lost-hills reveal">
+      <div class="lh-badge">🏆 世界最大 World's Largest</div>
+      <h3>Lost Hills “Oasis” 超充站 · 必打卡 📸</h3>
+      <p class="lh-sub">I-5 &amp; Hwy 46, Lost Hills, CA · 你指定要故意停的那站</p>
+      <div class="lh-stats">
+        <div><b>164</b><span>充电桩 Stalls</span></div>
+        <div><b>30</b><span>英亩 Acres</span></div>
+        <div><b>11MW</b><span>太阳能顶棚</span></div>
+        <div><b>2</b><span>露天汽车影院</span></div>
+      </div>
+      <p class="lh-desc">全球最大的 Tesla 超充站，2025 年 11 月全面开放。太阳能顶棚 + 10 块 Megapack 电池<b>离网供电</b>，164 个 V4 桩一字排开极其壮观。距 Kettleman City 仅约 30 mi，是去程绝佳的拍照打卡 + 补电点。</p>
+      <a class="map-btn primary" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=Tesla+Supercharger+Oasis+Lost+Hills+CA">🗺️ 导航到 Lost Hills Oasis</a>
+    </div>
+
+    <div class="grid" id="chargeGrid" style="margin-top:18px"></div>
+  </div>
+</section>
+
+<!-- INFO -->
+<section id="info">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Good to Know</div>
+      <h2>实用信息面板</h2>
+    </div>
+    <div class="info-grid" id="infoGrid"></div>
+  </div>
+</section>
+
+<!-- PACK -->
+<section id="pack">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Don't Forget</div>
+      <h2>亲子打包清单 ✅</h2>
+      <p>勾选会自动保存到本地（刷新不丢失）。</p>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="packFill"></div></div>
+    <div class="check-wrap" id="packGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="f-title">Have an amazing trip! 🌅</div>
+    <p>南加州亲子自驾 · 2026.06.27 – 07.04 · 3 大 1 小</p>
+    <p style="margin-top:4px">行程基于日历预订自动生成 · 景点/餐厅信息会随季节变动，出行前请再次确认营业时间与票务。</p>
+  </div>
+</footer>
+
+<script>
+/* ============ DATA ============ */
+const PLAN_META = {
+  A: { name:"轻松 Chill 亲子版", en:"Relaxed & Kid-First", rec:true,
+       desc:"每天 2–3 个主要景点，午后留出泳池/午睡时间，一切围着孩子转。",
+       pace:"🐢 节奏：超放松 · 每天 2–3 站 · 充足休息" },
+  B: { name:"效率打卡版", en:"See It All", rec:false,
+       desc:"景点更多、动线更优，含环球影城。适合想多看多体验的家庭。",
+       pace:"⚡ 节奏：紧凑 · 每天 3–4 站 · 早出晚归" },
+  C: { name:"美食深度版", en:"Foodie Deep-Dive", rec:false,
+       desc:"以餐厅和当地风味为核心：圣盖博中餐、Grand Central、Convoy 亚洲街。景点为辅。",
+       pace:"🍜 节奏：悠闲 · 重吃轻逛 · 一天一顿“大餐”" }
+};
+
+/* shared days (1,2,3,8) + per-plan days (4-7) */
+const D1 = { n:1, date:"6/27 周六 Sat", title:"出发日 · 一路向南", en:"Drive Day — Hello, SoCal", badge:"🚗 自驾 ~6h",
+  segs:[
+    {ic:"🔋",t:"前一晚",nm:"满电出发准备",en:"Charge to 100% overnight",meta:"Model 3 LR · 实际高速续航约 270–300 mi",note:"长途日才充满——出发前一晚在家/附近超充把电充到 100%。全程约 380 mi，安排 1–2 次超充。",xhs:{b:"充电策略",t:"按 10%→80% 规划每段 180–230 mi；过 Grapevine 翻山耗电多，留足余量。"}},
+    {ic:"🌄",t:"08:30",nm:"圣克拉拉出发",en:"Depart Santa Clara",meta:"I-5 南下 · 约 380 mi / 5.5–6 h(含充电)",note:"早出发避开 LA 下午堵车；后排给娃备好平板+耳机。"},
+    {ic:"⚡",t:"11:30",nm:"Kettleman City 超充 + In-N-Out 午餐",en:"Supercharger + In-N-Out, Kettleman City",meta:"27675 Bernard Dr · 96 桩 250kW · 人均 $10",note:"I-5 黄金补给站：✅ 24/7 Tesla 休息室(厕所/咖啡师/WiFi) ✅ In-N-Out + Bravo Farms ✅ 充到 ~90%。距出发约 190 mi，边吃边充 30–40 分钟刚好。",kid:"娃下车放电 + 吃汉堡 + 上厕所，一站全搞定。",xhs:{b:"🔥3万+赞",t:"“加州公路旅行第一餐”仪式感，Animal Style 必点；Tesla 休息室能买周边。"}},
+    {ic:"📸",t:"13:00",nm:"Lost Hills “Oasis” 超充打卡",en:"World's Largest Supercharger, Lost Hills",meta:"I-5 & Hwy 46 · 世界最大 164 桩",note:"故意停这里打卡！全球最大超充站，占地 30 英亩、太阳能顶棚 11MW + 10 块 Megapack 离网供电，还有两个露天汽车影院。距 Kettleman 仅 ~30 mi，拍照 + 顺手补点电(可选)。",kid:"巨型光伏顶棚超震撼，娃拍照打卡。",xhs:{b:"🔥新晋顶流",t:"2025年11月刚全面开放的“超充绿洲”，164 个桩排开蔚为壮观，必拍。"}},
+    {ic:"⚡",t:"14:30",nm:"(可选) Tejon Ranch 翻山补电",en:"Optional top-up · Tejon Ranch, Lebec",meta:"Grapevine 山脚 · 奥莱 + 美食广场 + 厕所",note:"翻越 Grapevine(海拔 1255m)耗电多。若电量 < 30% 在此补 10–15 分钟再上山；下山一路回充进 LA 盆地。",xhs:{b:"提示",t:"山脚奥莱有 In-N-Out / Firehouse Subs + 厕所，娃可再放一次电。"}},
+    {ic:"☀️",t:"16:00",nm:"抵达安纳海姆 / Check-in",en:"Ramada by Wyndham, Anaheim",meta:"2060 S Harbor Blvd · 迪士尼旁",note:"先入住放行李、泳池泡一下，恢复体力迎接明天迪士尼。",kid:"娃午睡补觉，晚上才有电。"},
+    {ic:"🌙",t:"18:30",nm:"Anaheim Packing House",en:"Anaheim Packing District",meta:"1919 柑橘仓库改造美食广场 · 人均 $18",note:"27+ 摊位从印度菜到寿司到甜品，众口好调，氛围超好。",xhs:{b:"🔥爆款",t:"网红美食广场，二楼有座位，娃能自己选吃的。"}}
+  ],
+  hotel:"🏨 Ramada by Wyndham Anaheim Convention Center（6/27–6/30，3 晚）",
+  foot:"💡 今日 Tip：到迪士尼前，今晚先在 Disneyland App 里订好明天的 <b>Park Reservation</b> 和 <b>Lightning Lane Multi Pass</b>。" };
+
+const D2 = { n:2, date:"6/28 周日 Sun", title:"迪士尼乐园 · 经典魔法", en:"Disneyland Park", badge:"🎢 主题乐园",
+  segs:[
+    {ic:"🌄",t:"08:00",nm:"开园即入 Rope Drop",en:"Disneyland Park",meta:"门票 ~$150+/人 · 娃 3 岁以下免费",note:"早 30 分钟到闸口，先冲热门项目。婴儿车可租。",kid:"3 岁以下免门票；善用 Rider Switch 轮流抱娃排队。",xhs:{b:"🔥10万+赞",t:"开园先冲 Rise of the Resistance（需 102cm），再回头玩小项目。"}},
+    {ic:"🎠",t:"10:00",nm:"幻想世界 Fantasyland",en:"Peter Pan / Small World / Carrousel",meta:"低龄友好区 · 无身高限制居多",note:"小飞侠、小小世界、旋转木马、小熊维尼，最适合小朋友。",kid:"几乎都无身高限制，娃的快乐天堂。"},
+    {ic:"🍗",t:"12:30",nm:"午餐 · Plaza Inn",en:"Plaza Inn (园内)",meta:"招牌炸鸡 · 人均 $22",note:"迪士尼公认最好吃的炸鸡之一，室内有空调可避正午高温。",xhs:{b:"🔥1.2万赞",t:"“迪士尼天花板炸鸡”，配土豆泥一份够娃吃。"}},
+    {ic:"☀️",t:"14:00",nm:"加勒比海盗 + 鬼屋 + 月台",en:"Pirates / Haunted Mansion",meta:"经典慢船项目 · 凉快",note:"午后最热，安排室内/坐船项目避暑，顺便让娃补觉。",kid:"加勒比海盗无身高限制，适合全家。"},
+    {ic:"🎆",t:"21:00",nm:"烟花 + 花车巡游",en:"Fireworks & Parade",meta:"夏季限定",note:"提前 40 分钟在城堡前主街占位；带件薄外套，晚上海风凉。",xhs:{b:"🔥爆款",t:"主街靠城堡的位置最出片，烟花配城堡封神。"}}
+  ],
+  hotel:"🏨 Ramada by Wyndham Anaheim（第 2 晚）",
+  foot:"💡 今日 Tip：园区暴走一天，备好水壶+防晒+小风扇；中午回酒店午睡再杀回也完全可以（手章可重入园）。" };
+
+const D3 = { n:3, date:"6/29 周一 Mon", title:"迪士尼加州冒险 · 皮克斯总动员", en:"Disney California Adventure", badge:"🎢 主题乐园",
+  segs:[
+    {ic:"🌄",t:"08:30",nm:"Cars Land 赛车总动员",en:"Radiator Springs Racers",meta:"身高限 102cm / 40in",note:"全园人气王，开园先冲或用 Lightning Lane。娃不够高可玩旁边 Mater（81cm）。",kid:"⚠️ Racers 需 102cm；Luigi/Mater 仅需 81cm。",xhs:{b:"🔥8万+赞",t:"Cars Land 傍晚霓虹亮灯超出片，白天先排队晚上来拍照。"}},
+    {ic:"🕷️",t:"10:30",nm:"复仇者营地 Avengers Campus",en:"WEB SLINGERS: Spider-Man",meta:"无身高限制 · 互动射网",note:"全家一起射蜘蛛网比分数，娃超爱；还能偶遇蜘蛛侠特技。",kid:"无身高限制，互动型，低龄也能玩。"},
+    {ic:"🍝",t:"12:30",nm:"午餐 · Pym Test Kitchen",en:"Pym Test Kitchen (园内)",meta:"创意美式 · 人均 $20",note:"巨型/迷你食物主题餐厅，造型有趣拍照好玩，娃会觉得新奇。",xhs:{b:"⭐小众",t:"“放大缩小”主题食物，比城堡那边人少很多。"}},
+    {ic:"🧜",t:"14:30",nm:"小美人鱼 + 米奇摩天轮",en:"Little Mermaid / Pixar Pal-A-Round",meta:"慢速暗轨 · 凉快",note:"小美人鱼无身高限制、坐着吹空调；摩天轮看海湾。",kid:"小美人鱼 0 门槛，娃午后补觉好选择。"},
+    {ic:"🌙",t:"18:30",nm:"晚餐 · Naples / Downtown Disney",en:"Naples Ristorante, Downtown Disney",meta:"意餐披萨 · 人均 $30",note:"出园在 Downtown Disney 吃，氛围好、有户外位，不必再开车。",xhs:{b:"🔥1万赞",t:"娃吃披萨大人喝杯酒，逛完商店散步回酒店刚好。"}}
+  ],
+  hotel:"🏨 Ramada by Wyndham Anaheim（第 3 晚 · 明早退房）",
+  foot:"💡 今日 Tip：2026/6/9 起取消了 11 点前禁止 Park Hopper 的限制——如果买了双园票，今天可随时两园互跳。" };
+
+const D8 = { n:8, date:"7/4 周六 Sat", title:"返程日 · 满载而归", en:"Drive Home — Independence Day", badge:"🚗 自驾 ~7–8h",
+  segs:[
+    {ic:"🔋",t:"前一晚",nm:"圣地亚哥充满电",en:"Charge up in San Diego",meta:"Mission Valley 超充就在 Hotel Circle 附近",note:"返程约 460 mi，前一晚在 SD 附近超充充满，规划 2 次充电(Tejon + Kettleman)。"},
+    {ic:"🌄",t:"08:00",nm:"圣地亚哥退房 / 早餐打包",en:"Check out · Best Western Seven Seas",meta:"退房 11:00 前",note:"7/4 美国独立日，下午公路车多，越早出发越顺。",kid:"出发前让娃在酒店草坪/泳池边放电再上车。"},
+    {ic:"⚡",t:"11:00",nm:"Tejon Ranch 超充(翻山后)",en:"Supercharger · Tejon Ranch, Lebec",meta:"Grapevine 山脚 · 奥莱 + 厕所 · 距 SD ~200 mi",note:"翻过 Grapevine 后第一站补电；奥莱有 In-N-Out / 美食广场 + 厕所，娃放电。",xhs:{b:"路书",t:"上 Grapevine 前电量留足；翻过山顶到 Tejon 一路下坡省电。"}},
+    {ic:"⚡",t:"13:00",nm:"Kettleman City 超充 + In-N-Out 午餐",en:"Supercharger + In-N-Out, Kettleman City",meta:"96 桩 · 24/7 休息室厕所 · 人均 $10",note:"返程也在这吃午饭 + 上厕所 + 充到 ~90%，最后一程 ~190 mi 直接回家。",kid:"熟悉的 In-N-Out 收尾，娃开心。",xhs:{b:"🔥3万+赞",t:"来回都打卡 Kettleman，Tesla 休息室歇脚超舒服。"}},
+    {ic:"🏠",t:"17:30",nm:"抵达圣克拉拉 · 到家",en:"Home, Santa Clara",meta:"全程约 460 mi",note:"独立日晚上部分城市有烟花，到家不累的话可就近看一场收尾。",xhs:{b:"提示",t:"7/4 晚高速+市区烟花点会堵，导航避开烟花场地周边。"}}
+  ],
+  hotel:"🏁 行程圆满结束 · Welcome home!",
+  foot:"💡 今日 Tip：长途返程每 2 小时停一次；后备箱给娃留个“无聊盒”（贴纸/小玩具/零食）救场。" };
+
+/* ---- Plan A days 4-7 ---- */
+const A4 = { n:4, date:"6/30 周二 Tue", title:"安纳海姆 → 洛杉矶 · 星空之夜", en:"Drive to LA · Griffith", badge:"🌃 LA",
+  segs:[
+    {ic:"🌄",t:"09:00",nm:"退房 → 北上洛杉矶",en:"Anaheim → LA Downtown",meta:"约 40 mi / 1h",note:"日历事件 “LA DT”。先到市区简单逛逛，避开正午高温。"},
+    {ic:"🍜",t:"12:00",nm:"午餐 · Grand Central Market",en:"Grand Central Market, DTLA",meta:"百年美食广场 · 人均 $18",note:"1917 年的市场，Eggslut、墨西哥 taco、咖啡都有，众口好调。",xhs:{b:"🔥5万+赞",t:"DTLA 必打卡，Eggslut 早午餐排队但值。"}},
+    {ic:"🏨",t:"15:00",nm:"入住 Hyatt Place Pasadena",en:"399 E Green St, Pasadena",meta:"两大床+沙发床",note:"放行李、泳池休息，傍晚再上天文台（避开人潮+拍日落）。",kid:"午后泳池+小睡，为晚上观星储备体力。"},
+    {ic:"🔭",t:"19:00",nm:"格里菲斯天文台",en:"Griffith Observatory",meta:"入场免费 · 停车免费/路边",note:"傍晚到看日落→城市灯海→好莱坞标志；19:00–21:30 免费公众望远镜看月亮/土星。",kid:"娃可亲手用大望远镜看月亮，天文馆 show $10。",xhs:{b:"🔥10万+赞",t:"日落后蓝调时刻拍 LA 夜景天花板，周一闭馆、今天周二刚好开。"}},
+    {ic:"🌙",t:"21:30",nm:"晚餐 · 帕萨迪纳老城",en:"Old Town Pasadena",meta:"餐厅林立 · 人均 $25",note:"下山回 Pasadena，Colorado Blvd 一带宵夜选择多。"}
+  ],
+  hotel:"🏨 Hyatt Place Pasadena（6/30–7/2，2 晚）",
+  foot:"💡 今日 Tip：天文台山上停车位有限，傍晚比白天好停；导航设 “Griffith Observatory”，不是 Griffith Park。" };
+
+const A5 = { n:5, date:"7/1 周三 Wed", title:"洛杉矶 chill 日 · 海滩或科学馆", en:"Easy LA Day", badge:"🌴 LA",
+  segs:[
+    {ic:"🌄",t:"09:30",nm:"睡到自然醒 + 酒店早餐",en:"Slow morning",meta:"Hyatt 含早餐",note:"chill 版的精髓——不赶。让娃睡饱再出发。",kid:"补觉日，避免连续暴走崩溃。"},
+    {ic:"🏖️",t:"11:00",nm:"圣塔莫尼卡海滩 + 码头",en:"Santa Monica Pier & Beach",meta:"免费海滩 · 码头摩天轮另购",note:"沙滩堆沙、码头摩天轮、街头艺人；66 号公路终点打卡。",kid:"沙滩玩水+摩天轮，娃的快乐拉满；备换洗衣物。",xhs:{b:"🔥爆款",t:"码头黄色 Pacific Park 摩天轮是 LA 名片，日落最美。"}},
+    {ic:"🍤",t:"13:00",nm:"午餐 · 码头边海鲜",en:"Santa Monica seafood",meta:"美式海鲜 · 人均 $28",note:"边吃边看海，娃吃炸鱼薯条最稳。"},
+    {ic:"☀️",t:"15:30",nm:"返回 + 泳池/午休",en:"Pool time",meta:"Hyatt Pasadena",note:"避开下午晚高峰，回酒店休整。"},
+    {ic:"🌙",t:"18:30",nm:"晚餐 · 圣盖博中餐",en:"San Gabriel · 隆兴记 Long Xing Ji",meta:"无锡小笼/汤包 · 人均 $20",note:"离 Pasadena 很近的华人美食城，吃顿熟悉的中餐治愈一下。",xhs:{b:"🔥2万赞",t:"蟹粉汤包+无锡酱排骨+葱油饼，性价比高、娃也爱。"}}
+  ],
+  hotel:"🏨 Hyatt Place Pasadena（第 2 晚 · 明早退房）",
+  foot:"💡 今日 Tip：圣盖博 (SGV) 是全美中餐天花板之一，离 Pasadena 仅 15 分钟，想换口味随时杀过去。" };
+
+const A6 = { n:6, date:"7/2 周四 Thu", title:"洛杉矶 → 圣地亚哥 · 海湾日落", en:"Drive to San Diego", badge:"⚓ SD",
+  segs:[
+    {ic:"🌄",t:"09:30",nm:"退房 → 南下圣地亚哥",en:"Pasadena → San Diego",meta:"约 120 mi / 2–2.5h",note:"中午前出发，路上可在 Carlsbad 花田/奥莱稍作停留。"},
+    {ic:"🌮",t:"13:00",nm:"午餐 · Old Town 墨西哥菜",en:"Café Coyote, Old Town",meta:"正宗墨西哥 · 人均 $22",note:"圣地亚哥老城多年评选最佳墨西哥餐厅之一，现做玉米饼。",xhs:{b:"🔥1.5万赞",t:"现压 tortilla + Margarita，老城风情拉满。"}},
+    {ic:"🏨",t:"16:00",nm:"入住 Best Western Seven Seas",en:"411 Hotel Circle S, SD",meta:"Hotel Circle / Mission Valley",note:"check-in 后休整，傍晚去 Mission Beach 吹海风。",kid:"酒店有泳池，娃先玩水。"},
+    {ic:"🎡",t:"18:00",nm:"Belmont Park + Mission Beach",en:"Belmont Park, Mission Beach",meta:"复古游乐园 · 单项目 $$",note:"海边百年木质过山车 Giant Dipper、碰碰车，沙滩就在旁边。",kid:"游乐项目按身高，低龄有专属区；日落沙滩超治愈。",xhs:{b:"🔥爆款",t:"海边游乐场+日落，圣地亚哥度假感天花板。"}},
+    {ic:"🌙",t:"20:00",nm:"晚餐 · 海滩餐厅",en:"Beachfront dinner",meta:"美式/海鲜 · 人均 $30",note:"Mission/Pacific Beach 一带边看海边吃。"}
+  ],
+  hotel:"🏨 Best Western Seven Seas, San Diego（7/2–7/4，2 晚）",
+  foot:"💡 今日 Tip：圣地亚哥早晚有 “June Gloom” 海雾、体感凉，给娃带件薄长袖。" };
+
+const A7 = { n:7, date:"7/3 周五 Fri", title:"圣地亚哥动物园 · 全天", en:"San Diego Zoo Day", badge:"🦁 SD",
+  segs:[
+    {ic:"🌄",t:"09:00",nm:"圣地亚哥动物园",en:"San Diego Zoo, Balboa Park",meta:"门票 ~$74 成人 / 儿童略低 · 停车免费",note:"世界顶级动物园，先坐 Skyfari 空中缆车 + 园内 bus 概览，再重点看熊猫/考拉。",kid:"娃的最爱日；婴儿车可租，园区有坡道注意防晒。",xhs:{b:"🔥10万+赞",t:"开园先冲熊猫馆排队短；Skyfari 缆车俯瞰全园出片。"}},
+    {ic:"🍔",t:"12:30",nm:"午餐 · 园内 Albert's",en:"Albert's Restaurant (园内)",meta:"美式 · 人均 $20",note:"动物园里树荫餐厅，省去出园麻烦，娃边吃边休息。"},
+    {ic:"🏛️",t:"15:00",nm:"Balboa Park 巴尔博亚公园",en:"Balboa Park",meta:"西班牙风建筑 · 多数花园免费",note:"动物园就在公园里，出来逛逛植物园、喷泉、西班牙村，悠闲散步。",xhs:{b:"⭐小众宝藏",t:"建筑超欧洲范，随手拍都是大片，娃可在草坪跑。"}},
+    {ic:"🌅",t:"17:00",nm:"Sunset Cliffs 日落悬崖",en:"Sunset Cliffs Natural Park",meta:"免费 · 圣地亚哥看日落天花板",note:"傍晚海蚀崖看太平洋金色日落，出大片；看完顺路去 Convoy 吃晚餐。",kid:"⚠️ 崖边无护栏，务必牵好娃；带件薄外套，海风凉。",xhs:{b:"🔥爆款",t:"SD 日落第一机位，金色剪影氛围感拉满。"}},
+    {ic:"🌙",t:"19:00",nm:"晚餐 · Convoy 亚洲街",en:"Convoy St (Asian food)",meta:"中/日/韩/越 · 人均 $22",note:"圣地亚哥亚洲美食一条街，火锅/拉面/烤肉/奶茶任选，娃有熟悉口味。",xhs:{b:"🔥3万赞",t:"SD 亚洲胃的归宿，川菜/点心/甜品 Yikoyiko 都在这条街。"}}
+  ],
+  hotel:"🏨 Best Western Seven Seas（第 2 晚 · 明早返程）",
+  foot:"💡 今日 Tip：动物园 +Balboa 一天足够 chill；若娃还有电，可加 La Jolla Cove 看海狮（免费、超近）。" };
+
+/* ---- Plan B days 4-7 (打卡版) ---- */
+const B4 = { n:4, date:"6/30 周二 Tue", title:"安纳海姆 → 洛杉矶 · 暴走打卡", en:"LA Highlights", badge:"🌃 LA",
+  segs:[
+    {ic:"🌄",t:"08:30",nm:"退房 → LA Downtown",en:"Anaheim → DTLA",meta:"约 40 mi / 1h",note:"日历 “LA DT”。早到先逛市区地标。"},
+    {ic:"🚀",t:"10:00",nm:"加州科学中心",en:"California Science Center",meta:"免费入场 · 看奋进号航天飞机",note:"真·航天飞机 Endeavour + 互动科学展，室内凉快，娃超爱。",kid:"免费、室内、寓教于乐，雨热皆宜。",xhs:{b:"🔥2万赞",t:"免费看真航天飞机，性价比天花板。"}},
+    {ic:"🍜",t:"12:30",nm:"午餐 · Grand Central Market",en:"Grand Central Market",meta:"百年市场 · 人均 $18",note:"DTLA 必吃美食广场，选择多。",xhs:{b:"🔥5万+赞",t:"Eggslut/taco 都在这，娃自己挑。"}},
+    {ic:"🎬",t:"14:30",nm:"好莱坞星光大道 + 杜比剧院",en:"Hollywood Walk of Fame",meta:"免费",note:"打卡 TCL 中国剧院手印、奥斯卡红毯剧院，远眺 Hollywood 标志。",kid:"人多看好娃；可买卡通合影注意拒绝强收费。"},
+    {ic:"🔭",t:"19:00",nm:"格里菲斯天文台",en:"Griffith Observatory",meta:"免费入场",note:"傍晚上山看日落+夜景+免费望远镜观星。",xhs:{b:"🔥10万+赞",t:"蓝调时刻拍 LA 夜景天花板。"}},
+    {ic:"🏨",t:"21:30",nm:"入住 Hyatt Place Pasadena",en:"Pasadena",meta:"两大床+沙发床",note:"下山回酒店休息。"}
+  ],
+  hotel:"🏨 Hyatt Place Pasadena（6/30–7/2，2 晚）",
+  foot:"💡 今日 Tip：打卡版今天偏满，可把好莱坞或科学中心二选一，给娃留点余量。" };
+
+const B5 = { n:5, date:"7/1 周三 Wed", title:"环球影城 · 全天", en:"Universal Studios Hollywood", badge:"🎢 LA",
+  segs:[
+    {ic:"🌄",t:"08:00",nm:"环球影城开园即入",en:"Universal Studios Hollywood",meta:"门票 ~$120+/人",note:"先冲哈利波特禁忌之旅 + Studio Tour 影城之旅。",kid:"超级任天堂世界(马里奥)娃必爱；部分项目有身高限制(约 102cm)。",xhs:{b:"🔥8万+赞",t:"马里奥世界 + 哈利波特，开园先冲热门，午后人挤。"}},
+    {ic:"🍄",t:"12:30",nm:"午餐 · Super Nintendo World",en:"Toadstool Cafe (园内)",meta:"主题餐厅 · 人均 $28",note:"蘑菇造型餐厅，娃尖叫现场；建议提前在 App 排队。",xhs:{b:"🔥2万赞",t:"马里奥主题餐，奇诺比奥蘑菇汉堡出片。"}},
+    {ic:"☀️",t:"14:30",nm:"Studio Tour + 小黄人乐园",en:"Studio Tour / Minions",meta:"影城之旅",note:"坐车穿越拍摄实景+地震/大白鲨特效，小黄人区低龄友好。",kid:"Studio Tour 无身高限制，全家都能玩。"},
+    {ic:"🌙",t:"19:00",nm:"晚餐 · CityWalk",en:"Universal CityWalk",meta:"餐厅街 · 人均 $30",note:"出园即逛，餐厅多、灯光炫，娃看热闹。"}
+  ],
+  hotel:"🏨 Hyatt Place Pasadena（第 2 晚 · 明早退房）",
+  foot:"💡 今日 Tip：环球比迪士尼小、一天足够；买 Express Pass 可省大量排队（预算允许时强推）。" };
+
+const B6 = Object.assign({}, A6, { foot: A6.foot });
+const B7 = { n:7, date:"7/3 周五 Fri", title:"动物园 + 海湾一网打尽", en:"Zoo + Balboa + La Jolla", badge:"🦁 SD",
+  segs:[
+    {ic:"🌄",t:"08:30",nm:"圣地亚哥动物园(半天)",en:"San Diego Zoo",meta:"门票 ~$74 · 停车免费",note:"开园先冲熊猫+缆车，集中刷重点，午前撤。",kid:"娃最爱；早到避热避人。",xhs:{b:"🔥10万+赞",t:"开园先熊猫后缆车，半天也能玩爽。"}},
+    {ic:"🌮",t:"12:30",nm:"午餐 · Old Town 墨西哥",en:"Café Coyote, Old Town",meta:"墨西哥 · 人均 $22",note:"出园近，现做 tortilla。",xhs:{b:"🔥1.5万赞",t:"老城风情 + 现压玉米饼。"}},
+    {ic:"🦭",t:"15:00",nm:"La Jolla Cove 海湾",en:"La Jolla Cove",meta:"免费 · 看海狮海豹",note:"礁石上成群海狮海豹，超近距离；娃看动物嗨翻。",kid:"注意别太靠近野生海狮；崖边看好娃。",xhs:{b:"🔥爆款",t:"免费看野生海狮，加州最美海湾之一。"}},
+    {ic:"🌙",t:"18:30",nm:"晚餐 · Convoy 亚洲街",en:"Convoy St",meta:"亚洲菜 · 人均 $22",note:"火锅/拉面/烤肉随选。",xhs:{b:"🔥3万赞",t:"SD 亚洲胃归宿。"}}
+  ],
+  hotel:"🏨 Best Western Seven Seas（第 2 晚）",
+  foot:"💡 今日 Tip：动物园+海湾节奏偏满，娃易累；备好车上小睡时间衔接两站。" };
+
+/* ---- Plan C days 4-7 (美食版) ---- */
+const C4 = { n:4, date:"6/30 周二 Tue", title:"安纳海姆 → 圣盖博 · 中餐盛宴", en:"SGV Chinese Food", badge:"🍜 LA",
+  segs:[
+    {ic:"🌄",t:"10:00",nm:"退房 → 圣盖博谷 (SGV)",en:"Anaheim → San Gabriel Valley",meta:"约 35 mi / 50min",note:"日历 “LA DT”。直奔全美中餐天花板。"},
+    {ic:"🥟",t:"12:00",nm:"午餐 · 隆兴记",en:"Long Xing Ji, San Gabriel",meta:"无锡菜/小笼 · 人均 $20",note:"蟹粉汤包、无锡酱排骨、葱油饼、汤面，性价比超高。",xhs:{b:"🔥2万赞",t:"汤包流心、酱排骨甜糯，娃爱炒饭+小笼。"}},
+    {ic:"🏨",t:"15:00",nm:"入住 Hyatt Place Pasadena",en:"Pasadena",meta:"两大床+沙发床",note:"放行李泳池休息，消化一下迎接晚餐。",kid:"午后泳池放电。"},
+    {ic:"🍢",t:"18:30",nm:"晚餐 · 长安长安",en:"Chang An Chang An, San Gabriel",meta:"中式+烧烤 · 人均 $30",note:"装修雅致、有露台星空位，中餐里别出心裁加了烧烤，氛围好。",xhs:{b:"🔥1.5万赞",t:"环境出片、菜品精致，约会/家庭都合适。"}},
+    {ic:"🍮",t:"20:30",nm:"宵夜甜品 · SGV 甜品店",en:"SGV desserts / 奶茶",meta:"人均 $8",note:"芋圆/豆花/奶茶随选，娃的快乐结尾。"}
+  ],
+  hotel:"🏨 Hyatt Place Pasadena（6/30–7/2，2 晚）",
+  foot:"💡 今日 Tip：SGV 餐厅多现金/小费友好，热门店饭点排队，建议错峰或先取号。" };
+
+const C5 = { n:5, date:"7/1 周三 Wed", title:"DTLA 美食 + 小东京", en:"DTLA Food Crawl", badge:"🍱 LA",
+  segs:[
+    {ic:"🌄",t:"10:00",nm:"Grand Central Market",en:"Grand Central Market, DTLA",meta:"百年市场 · 人均 $18",note:"1917 年市场，Eggslut 蛋堡、Villa's Tacos、咖啡一路吃。",kid:"摊位多娃自己挑，座位充足。",xhs:{b:"🔥5万+赞",t:"DTLA 美食广场必打卡，Eggslut 早午餐必排。"}},
+    {ic:"☕",t:"12:30",nm:"Angels Flight + 散步",en:"Angels Flight Railway",meta:"$1 古董缆车",note:"全球最短铁路，市场对面，娃坐一趟超开心，顺便消食。",xhs:{b:"⭐小众",t:"$1 坐百年小火车，《爱乐之城》取景地。"}},
+    {ic:"🍣",t:"14:30",nm:"小东京 Little Tokyo",en:"Little Tokyo",meta:"日式 · 人均 $20",note:"抹茶、鲷鱼烧、拉面、日杂小店，娃逛吃两不误。",xhs:{b:"🔥1万赞",t:"Fugetsu-Do 百年和菓子 + 抹茶软冰必试。"}},
+    {ic:"☀️",t:"16:30",nm:"返回 Pasadena 休息",en:"Pool / rest",meta:"Hyatt",note:"美食日也要留白，回酒店泡泳池。"},
+    {ic:"🌙",t:"18:30",nm:"晚餐 · 帕萨迪纳老城",en:"Old Town Pasadena",meta:"多国料理 · 人均 $28",note:"Colorado Blvd 餐厅林立，散步选一家。"}
+  ],
+  hotel:"🏨 Hyatt Place Pasadena（第 2 晚 · 明早退房）",
+  foot:"💡 今日 Tip：DTLA 停车按次 $15–25，停一个库步行串吃最省心；周边治安一般，财物随身。" };
+
+const C6 = { n:6, date:"7/2 周四 Thu", title:"洛杉矶 → 圣地亚哥 · 老城风味", en:"Drive to SD · Old Town", badge:"🌮 SD",
+  segs:[
+    {ic:"🌄",t:"10:00",nm:"退房 → 南下圣地亚哥",en:"Pasadena → San Diego",meta:"约 120 mi / 2–2.5h",note:"中午前出发。"},
+    {ic:"🌮",t:"13:00",nm:"午餐 · Old Town 墨西哥",en:"Café Coyote, Old Town",meta:"墨西哥 · 人均 $22",note:"多年评选最佳墨西哥餐厅之一，现做玉米饼+Fiesta Sampler。",xhs:{b:"🔥1.5万赞",t:"现压 tortilla、街头风情，娃爱看现场做饼。"}},
+    {ic:"🏨",t:"16:00",nm:"入住 Best Western Seven Seas",en:"Hotel Circle, SD",meta:"Mission Valley",note:"休整，傍晚去 Little Italy 觅食。",kid:"泳池放电。"},
+    {ic:"🍝",t:"18:30",nm:"晚餐 · Little Italy",en:"Little Italy, San Diego",meta:"意餐 · 人均 $30",note:"圣地亚哥最潮街区之一，意面披萨 + 周边小店，氛围好。",xhs:{b:"🔥2万赞",t:"Little Italy 美食街，娃吃 pasta 大人喝杯酒。"}}
+  ],
+  hotel:"🏨 Best Western Seven Seas, San Diego（7/2–7/4，2 晚）",
+  foot:"💡 今日 Tip：Little Italy 周三/周六有农夫市集，可买现切水果给娃路上吃。" };
+
+const C7 = { n:7, date:"7/3 周五 Fri", title:"圣地亚哥 · Convoy 亚洲胃 + 海鲜", en:"Convoy + Seafood", badge:"🍤 SD",
+  segs:[
+    {ic:"🌄",t:"10:00",nm:"轻松上午 · 海边散步",en:"Mission Beach / Coronado",meta:"免费海滩",note:"美食日先散步攒胃口，沙滩玩水。",kid:"沙滩自由活动，防晒补水。"},
+    {ic:"🦐",t:"12:30",nm:"午餐 · 海鲜",en:"San Diego seafood",meta:"海鲜 · 人均 $30",note:"加州海鲜（生蚝/鱼塔可/龙虾卷），娃吃炸鱼薯条。",xhs:{b:"🔥1万赞",t:"圣地亚哥海港城市，海鲜新鲜度在线。"}},
+    {ic:"☀️",t:"15:00",nm:"Balboa Park 消食散步",en:"Balboa Park",meta:"多数花园免费",note:"西班牙风建筑+花园，悠闲走走，娃草坪放电。",xhs:{b:"⭐宝藏",t:"建筑超欧洲，随手出片。"}},
+    {ic:"🌙",t:"18:00",nm:"晚餐 · Convoy 亚洲街",en:"Convoy St (Asian food)",meta:"中/日/韩/越 · 人均 $25",note:"川菜老店(椒麻鸡/口水鸡)、点心、火锅；Yikoyiko 雪媚娘收尾。",kid:"熟悉的中餐口味，娃吃得香。",xhs:{b:"🔥3万赞",t:"SD 亚洲美食一条街，川菜+甜品一站搞定。"}}
+  ],
+  hotel:"🏨 Best Western Seven Seas（第 2 晚 · 明早返程）",
+  foot:"💡 今日 Tip：Convoy 餐厅停车位足、华人多，是行程尾声“回血”的安心选择。" };
+
+const ITINERARY = {
+  A: [D1,D2,D3,A4,A5,A6,A7,D8],
+  B: [D1,D2,D3,B4,B5,B6,B7,D8],
+  C: [D1,D2,D3,C4,C5,C6,C7,D8]
+};
+
+const SPOTS = [
+  {nm:"迪士尼乐园 + 加州冒险",en:"Disneyland & California Adventure",area:"Anaheim",heat:"hot",body:"双园王炸。经典魔法 + 皮克斯/漫威/Cars Land。低龄项目极多，烟花封神。"},
+  {nm:"格里菲斯天文台",en:"Griffith Observatory",area:"Los Angeles",heat:"hot",body:"免费入场，日落+夜景+免费公众望远镜观星。拍 LA 夜景天花板，周一闭馆。"},
+  {nm:"圣塔莫尼卡海滩 & 码头",en:"Santa Monica Pier",area:"Los Angeles",heat:"hot",body:"黄色 Pacific Park 摩天轮、66 号公路终点、沙滩戏水，亲子拍照圣地。"},
+  {nm:"圣地亚哥动物园",en:"San Diego Zoo",area:"Balboa Park, SD",heat:"hot",body:"世界顶级动物园，熊猫/考拉 + Skyfari 缆车俯瞰。娃的最爱日，停车免费。"},
+  {nm:"环球影城好莱坞",en:"Universal Studios",area:"Los Angeles",heat:"hot",body:"马里奥世界 + 哈利波特 + 影城之旅。一天玩爽（Plan B）。部分项目限高 102cm。"},
+  {nm:"Belmont Park / Mission Beach",en:"Belmont Park",area:"San Diego",heat:"hot",body:"海边百年木质过山车 Giant Dipper + 碰碰车，沙滩就在旁，度假感拉满。"},
+  {nm:"La Jolla Cove",en:"La Jolla Cove",area:"San Diego",heat:"gem",body:"礁石上成群野生海狮海豹，免费近距离观赏，加州最美海湾之一。"},
+  {nm:"Balboa Park 巴尔博亚公园",en:"Balboa Park",area:"San Diego",heat:"gem",body:"西班牙殖民风建筑群 + 花园 + 博物馆（周二多馆免费），随手出片。"},
+  {nm:"Grand Central Market",en:"Grand Central Market",area:"DTLA",heat:"hot",body:"1917 年百年美食市场，Eggslut/taco/咖啡，DTLA 必打卡美食地标。"},
+  {nm:"加州科学中心",en:"California Science Center",area:"DTLA",heat:"gem",body:"免费入场，可看真·奋进号航天飞机 + 互动科学展，室内避暑亲子首选。"},
+  {nm:"圣盖博谷 SGV",en:"San Gabriel Valley",area:"Los Angeles",heat:"gem",body:"全美中餐天花板，小笼/火锅/点心/甜品应有尽有，离 Pasadena 仅 15 分钟。"},
+  {nm:"Anaheim Packing House",en:"Anaheim Packing District",area:"Anaheim",heat:"gem",body:"1919 柑橘仓库改造的网红美食广场，27+ 摊位众口好调，氛围感强。"},
+  {nm:"好莱坞标志观景点",en:"Hollywood Sign · Lake Hollywood Park",area:"Los Angeles",heat:"hot",body:"Lake Hollywood Park 草坪正对好莱坞标志，免费、好停车，娃能草地跑，经典电影感打卡。"},
+  {nm:"威尼斯海滩 & 壁画",en:"Venice Beach & Murals",area:"Los Angeles",heat:"hot",body:"波西米亚风海滨步道，Venice 招牌、滑板场、彩色壁画与肌肉海滩，街拍氛围拉满。"},
+  {nm:"Melrose 粉红墙",en:"Paul Smith Pink Wall, Melrose",area:"Los Angeles",heat:"hot",body:"LA 最出名的粉色墙打卡点，配 Melrose 大道街头壁画，ins 风必拍（早上人少）。"},
+  {nm:"Urban Light 路灯阵",en:"Urban Light @ LACMA",area:"Los Angeles",heat:"hot",body:"202 盏 1920s 复古路灯组成的灯阵，白天夜晚都出片，旁边就是 La Brea 焦油坑。"},
+  {nm:"艺术区天使翅膀壁画",en:"Angel Wings, Arts District",area:"DTLA",heat:"gem",body:"Colette Miller 的天使翅膀壁画 + 满街涂鸦，DTLA 艺术区咖啡馆林立，文艺青年最爱。"},
+  {nm:"The Last Bookstore",en:"The Last Bookstore",area:"DTLA",heat:"gem",body:"加州最大二手书店，书隧道、书拱门超梦幻，DTLA 网红文艺地标，免费进。"},
+  {nm:"Runyon Canyon 城市徒步",en:"Runyon Canyon",area:"Los Angeles",heat:"gem",body:"轻量级登山，山顶俯瞰整个 LA 盆地到太平洋，日落最美；带娃走缓坡线即可。"},
+  {nm:"Sunset Cliffs 日落悬崖",en:"Sunset Cliffs Natural Park",area:"San Diego",heat:"hot",body:"圣地亚哥看日落天花板，海蚀崖 + 太平洋金色余晖，傍晚拍剪影；崖边看好娃。"},
+  {nm:"Coronado 海滩 & 酒店",en:"Coronado Beach & Hotel del Coronado",area:"San Diego",heat:"hot",body:"金色细沙 + 百年红顶白墙 Hotel del Coronado，明信片同款，跨海大桥风景一流。"},
+  {nm:"Old Towne Orange 古董小镇",en:"Old Towne Orange Plaza",area:"Orange County",heat:"gem",body:"离安纳海姆 15 分钟的复古小镇，古董店 + 老式冰淇淋店 + 圆环广场，文艺慢逛打卡。"}
+];
+
+const FOOD = [
+  {nm:"In-N-Out (Kettleman City)",en:"In-N-Out Burger",cuisine:"美式汉堡",price:"$10",must:"Double-Double · Animal Style 薯条",area:"I-5 中点",likes:"🔥 3万+ 公路必吃"},
+  {nm:"Anaheim Packing House",en:"Food Hall",cuisine:"多国美食广场",price:"$18",must:"任选 27+ 摊位 · 甜品",area:"Anaheim",likes:"🔥 爆款打卡"},
+  {nm:"Plaza Inn",en:"Plaza Inn",cuisine:"美式炸鸡(园内)",price:"$22",must:"招牌炸鸡 + 土豆泥",area:"Disneyland",likes:"🔥 1.2万 “迪士尼天花板炸鸡”"},
+  {nm:"Naples Ristorante",en:"Naples, Downtown Disney",cuisine:"意餐披萨",price:"$30",must:"那不勒斯披萨",area:"Downtown Disney",likes:"🔥 1万 户外位氛围好"},
+  {nm:"Grand Central Market",en:"Grand Central Market",cuisine:"百年美食市场",price:"$18",must:"Eggslut 蛋堡 · Tacos",area:"DTLA",likes:"🔥 5万+ DTLA 必打卡"},
+  {nm:"隆兴记 Long Xing Ji",en:"Long Xing Ji",cuisine:"无锡菜/小笼",price:"$20",must:"蟹粉汤包 · 无锡酱排骨 · 葱油饼",area:"San Gabriel",likes:"🔥 2万 性价比高娃也爱"},
+  {nm:"长安长安 Chang An",en:"Chang An Chang An",cuisine:"中式+烧烤",price:"$30",must:"招牌烧烤 · 星空露台",area:"San Gabriel",likes:"🔥 1.5万 环境出片"},
+  {nm:"Café Coyote",en:"Café Coyote",cuisine:"墨西哥菜",price:"$22",must:"现压 Tortilla · Fiesta Sampler · Margarita",area:"Old Town, SD",likes:"🔥 1.5万 老城最佳墨餐"},
+  {nm:"Convoy St 亚洲街",en:"Convoy Street",cuisine:"中/日/韩/越",price:"$22",must:"川菜椒麻鸡 · 火锅 · Yikoyiko 甜品",area:"San Diego",likes:"🔥 3万 SD 亚洲胃归宿"},
+  {nm:"Little Italy",en:"Little Italy",cuisine:"意餐",price:"$30",must:"手工意面 · 农夫市集",area:"San Diego",likes:"🔥 2万 最潮街区"},
+  {nm:"Albert's (园内)",en:"Albert's Restaurant",cuisine:"美式(动物园内)",price:"$20",must:"树荫用餐 · 省去出园",area:"San Diego Zoo",likes:"⭐ 省心之选"},
+  {nm:"Toadstool Cafe",en:"Toadstool Cafe",cuisine:"主题餐厅(环球)",price:"$28",must:"奇诺比奥蘑菇汉堡",area:"Universal",likes:"🔥 2万 马里奥主题出片"},
+  {nm:"Salt & Straw",en:"Salt & Straw",cuisine:"网红冰淇淋",price:"$8",must:"季节限定 · 蜂蜜薰衣草",area:"LA / SD",likes:"🔥 冰淇淋天花板"},
+  {nm:"République",en:"Republique",cuisine:"法式早午餐",price:"$30",must:"招牌可颂 · Brunch",area:"Mid-City LA",likes:"🔥 4万 古典建筑超出片"},
+  {nm:"Din Tai Fung 鼎泰丰",en:"Din Tai Fung",cuisine:"小笼包",price:"$25",must:"招牌小笼包 · 虾仁炒饭",area:"Glendale / SCV",likes:"🔥 老少咸宜稳"},
+  {nm:"Eggslut",en:"Eggslut",cuisine:"网红蛋堡",price:"$14",must:"Slut 溏心蛋盅 · 早午餐",area:"Grand Central Market",likes:"🔥 5万 排队也值"},
+  {nm:"Tacos El Gordo",en:"Tacos El Gordo",cuisine:"提华纳塔可",price:"$12",must:"Adobada 牧师塔可",area:"San Diego",likes:"🔥 3万 SD 必吃街头塔可"},
+  {nm:"Liberty Public Market",en:"Liberty Public Market",cuisine:"美食市集",price:"$18",must:"多摊位 · 海鲜 / 甜品",area:"Point Loma, SD",likes:"🔥 年轻人聚集地"},
+  {nm:"Extraordinary Desserts",en:"Extraordinary Desserts",cuisine:"颜值甜品",price:"$15",must:"招牌千层蛋糕 · 法式甜点",area:"Little Italy, SD",likes:"⭐ 颜值甜品打卡"}
+];
+
+const INFO = [
+  {ic:"🎟️",h:"门票 & 预约 Tickets",items:[
+    "<b>迪士尼</b>：务必用官方 App 订 <b>Park Reservation</b> + Lightning Lane Multi Pass。<a href='https://disneyland.disney.go.com' target='_blank'>disneyland.disney.go.com</a>",
+    "<b>身高线</b>：Radiator Springs Racers / Rise of the Resistance 需 <b>102cm</b>；Luigi/Mater 需 81cm；多数项目无限制，可用 Rider Switch 轮流。",
+    "<b>圣地亚哥动物园</b>：建议官网早鸟购票。<a href='https://sandiegozoo.org' target='_blank'>sandiegozoo.org</a>",
+    "<b>格里菲斯天文台</b>：入场免费，天文馆 Show $10/场。"
+  ]},
+  {ic:"🅿️",h:"停车 & 自驾 Parking",items:[
+    "<b>迪士尼</b>停车约 <b>$35/天</b>（Toy Story 场免费摆渡）。",
+    "<b>天文台</b>：山上车位紧张，傍晚较好停；路边/LADOT 计时位 ~$10。",
+    "<b>圣地亚哥动物园</b>：停车<b>免费</b>。",
+    "<b>DTLA</b>：停车库按次 $15–25，停一个库步行串点。",
+    "总里程约 <b>900+ mi</b>，全程加满油再上高速。"
+  ]},
+  {ic:"⛅",h:"天气 Weather (6月底–7月初)",items:[
+    "海岸(圣莫尼卡/圣地亚哥)：<b>18–24°C</b>，早晚 “June Gloom” 海雾偏凉。",
+    "内陆(安纳海姆/圣盖博)：<b>28–33°C</b>，正午晒，备防晒+遮阳。",
+    "迪士尼/动物园暴走日：水壶 + 小风扇 + 帽子必备。",
+    "给娃带<b>薄长袖</b>应对海边晚风与室内空调。"
+  ]},
+  {ic:"📱",h:"必备 App & 紧急 Apps",items:[
+    "Disneyland · Google Maps · Yelp(找吃的) · 大众点评/小红书(华人攻略)",
+    "环球影城官方 App(排队/点餐) · Weather 天气",
+    "<b>紧急电话 911</b>；儿童走失先找 Guest Relations / 工作人员。",
+    "停车记下楼层+车位号拍照；车内勿留贵重物品(尤其 DTLA)。"
+  ]},
+  {ic:"🛣️",h:"路程 & 时间 Distances",items:[
+    "Santa Clara → Anaheim：~380 mi / 5.5–6h",
+    "Anaheim → LA/Pasadena：~40 mi / 1h",
+    "Pasadena → San Diego：~120 mi / 2–2.5h",
+    "San Diego → Santa Clara：~460 mi / 7–8h(返程)",
+    "避开 LA 工作日 16:00–19:00 晚高峰。"
+  ]}
+];
+
+const PACK = {
+  "👶 孩子 Kids":["儿童常用药 + 退烧贴","防晒霜(儿童)+ 遮阳帽","水壶 + 小零食","平板/耳机 + 充电宝","换洗衣物 + 泳衣","薄外套(海边/空调)","婴儿车/背带(乐园暴走)","小玩具/贴纸“无聊盒”"],
+  "🧳 大人 Essentials":["护照/驾照 + 保险卡","信用卡 + 少量现金(SGV/小费)","手机充电线 + 车充","防晒 + 墨镜 + 帽子","常用药 + 创可贴","保温水壶","折叠购物袋","雨伞/薄风衣"],
+  "🚗 自驾 Car":["EZ 通行/ETC(收费路)","车载支架 + 导航","加油 App + 备用现金","湿巾 + 垃圾袋","急救包","毛毯 + 颈枕","停车记位小本","行李分类整理袋"],
+  "🎢 乐园日 Park Day":["乐园 App 已订票/预约","充电宝(必须!)","小风扇/喷雾","创可贴(走多磨脚)","雨衣(夏季阵雨)","密封袋(水上项目)","集合点约定","防走失手环(写电话)"],
+  "⚡ Tesla 充电 Charge":["充电线/转接头(目的地充电)","Tesla App 已登录","长途日前一晚充满 100%","出发前规划好充电站","常用站收藏(Kettleman/Tejon)","车机导航自动规划充电","会员/支付方式已绑定"]
+};
+
+const CHARGING = [
+  {nm:"Kettleman City", en:"27675 Bernard Dr · 96 桩 V3 250kW", role:"主充电 + 午餐站", dist:"距圣克拉拉 ~190 mi",
+   amen:["✅ In-N-Out","🚻 24/7 Tesla 休息室","☕ 咖啡师 + WiFi","🍴 Bravo Farms / Baja Fresh"],
+   note:"去程 & 返程都在此吃午饭 + 上厕所 + 充到 ~90%，边吃边充约 30–40 分钟刚好。",
+   map:"https://www.google.com/maps/search/?api=1&query=Tesla+Supercharger+Kettleman+City+CA"},
+  {nm:"Lost Hills “Oasis”", en:"I-5 & Hwy 46 · 164 桩（世界最大）", role:"📸 打卡 + 可选补电", dist:"Kettleman 以南 ~30 mi",
+   amen:["🏆 全球最大","☀️ 太阳能离网","🎬 露天汽车影院","🚻 厕所"],
+   note:"故意停这里打卡！以拍照为主，顺手补点电；164 桩 + 光伏顶棚极其震撼。",
+   map:"https://www.google.com/maps/search/?api=1&query=Tesla+Supercharger+Oasis+Lost+Hills+CA"},
+  {nm:"Tejon Ranch (Lebec)", en:"Grapevine 山脚 · Outlets 旁", role:"翻山补电站", dist:"Grapevine 山脚",
+   amen:["✅ In-N-Out / 美食广场","🚻 厕所","🛍️ 奥莱 Outlets"],
+   note:"翻越 Grapevine（海拔 1255m）耗电多；电量 < 30% 时在此补 10–15 分钟再上/下山。",
+   map:"https://www.google.com/maps/search/?api=1&query=Tesla+Supercharger+Tejon+Ranch+Lebec+CA"},
+  {nm:"Harris Ranch (Coalinga)", en:"I-5 & Hwy 198 · 100 桩", role:"备用 / 早段补电", dist:"Kettleman 以北 ~25 mi",
+   amen:["🍽️ 牛排餐厅","🚻 厕所","⛽ 加油站"],
+   note:"若想更早补电、或 Kettleman 排队，可在此停；老牌补给站。",
+   map:"https://www.google.com/maps/search/?api=1&query=Tesla+Supercharger+Harris+Ranch+Coalinga+CA"},
+  {nm:"SoCal 目的地充电", en:"Anaheim / Pasadena / San Diego", role:"市内日常补电", dist:"市区超充密集",
+   amen:["🏨 酒店 / 商场超充","🌃 夜间补电"],
+   note:"市内每天只跑几十英里；长途日前一晚在附近超充充满即可，白天无需专门充电。",
+   map:""}
+];
+
+const CAFES = [
+  {nm:"Alfred Coffee / Tea Room", en:"Melrose Place, LA", vibe:"粉色梦幻·LA 网红鼻祖", drink:"玫瑰拿铁 / 抹茶", spot:"粉墙 + “But First, Coffee” 标语", heat:"🔥 爆款"},
+  {nm:"Verve Coffee Roasters", en:"DTLA", vibe:"工业风落地窗", drink:"精品手冲 / 燕麦拿铁", spot:"大窗自然光，怎么拍都好看", heat:"🔥 高人气"},
+  {nm:"Maru Coffee", en:"Arts District / Los Feliz, LA", vibe:"极简日系性冷淡", drink:"抹茶拿铁", spot:"留白构图、原木吧台", heat:"⭐ 文艺"},
+  {nm:"Cafe Tondo", en:"Chinatown, LA", vibe:"日间烘焙·夜晚酒吧", drink:"可颂 + 手冲", spot:"2025 新晋顶流，复古拱廊", heat:"🔥 新晋"},
+  {nm:"Communal Coffee", en:"North Park, San Diego", vibe:"花店 + 咖啡", drink:"拿铁 + 鲜花", spot:"“Coffee + Flowers” 花墙壁画", heat:"🔥 爆款"},
+  {nm:"Parakeet Cafe", en:"La Jolla, San Diego", vibe:"热带花墙·健康系", drink:"椰子拿铁 / 能量碗", spot:"霓虹 “birds of a feather” + 花墙", heat:"🔥 高人气"},
+  {nm:"Holy Matcha", en:"North Park, San Diego", vibe:"千禧粉抹茶", drink:"招牌抹茶拿铁", spot:"全店粉色，最上镜", heat:"🔥 ins 名店"},
+  {nm:"Holsem Coffee", en:"North Park, San Diego", vibe:"大理石现代风", drink:"创意冷萃", spot:"大理石台面 + 瓷砖背景墙", heat:"⭐ 精致"},
+  {nm:"Palmy's", en:"Pacific Beach, San Diego", vibe:"加州海岛风", drink:"椰子咖啡", spot:"露台海岛 vibe，近海滩", heat:"⭐ 度假感"}
+];
+
+const VLOGS = [
+  {t:"How to Spend 3 PERFECT Days in San Diego", u:"https://www.youtube.com/watch?v=3qRrOqBqUho", c:"Voyager · 585K views"},
+  {t:"Trying every coffee shop in Los Angeles", u:"https://www.youtube.com/watch?v=4eIE7DfxqOY", c:"Brandon Chou · 38.7K"},
+  {t:"Trying 10 most popular coffee shops in LA in ONE DAY", u:"https://www.youtube.com/watch?v=rRWfdaEXaVk", c:"Camila Carpio"},
+  {t:"A few days in sunny San Diego (travel vlog)", u:"https://www.youtube.com/watch?v=EvWb4UsGftw", c:"Jaida Henderson"}
+];
+
+/* ============ RENDER ============ */
+let curPlan = "A";
+
+function renderPlanTabs(){
+  const box = document.getElementById('planTabs');
+  box.innerHTML = Object.keys(PLAN_META).map(k=>{
+    const p = PLAN_META[k];
+    return `<div class="plan-tab ${k===curPlan?'active':''}" data-plan="${k}">
+      ${p.rec?'<span class="rec-flag">★ 推荐 Recommended</span>':''}
+      <div class="pt-name">Plan ${k} · ${p.name}</div>
+      <div class="pt-en">${p.en}</div>
+      <div class="pt-desc">${p.desc}</div>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('.plan-tab').forEach(t=>{
+    t.onclick = ()=>{ curPlan = t.dataset.plan; renderPlanTabs(); renderTimeline();
+      document.getElementById('planPace').textContent = PLAN_META[curPlan].pace; };
+  });
+  document.getElementById('planPace').textContent = PLAN_META[curPlan].pace;
+}
+
+function segHTML(s){
+  return `<div class="seg">
+    <div class="seg-time"><div class="seg-ic">${s.ic}</div><div class="seg-clock">${s.t}</div></div>
+    <div>
+      <div class="seg-name">${s.nm} <span class="nm-en">${s.en||''}</span></div>
+      ${s.meta?`<div class="seg-meta">${s.meta}</div>`:''}
+      ${s.note?`<div class="seg-note">${s.note}</div>`:''}
+      ${s.kid?`<div class="seg-note kid">👶 ${s.kid}</div>`:''}
+      ${s.xhs?`<div class="xhs">📕 <span><b>${s.xhs.b}</b> · ${s.xhs.t}</span></div>`:''}
+    </div>
+  </div>`;
+}
+
+function renderTimeline(){
+  const tl = document.getElementById('timeline');
+  const days = ITINERARY[curPlan];
+  tl.innerHTML = days.map((d,i)=>`
+    <div class="day ${i===0?'open':''}" data-i="${i}">
+      <div class="day-card">
+        <div class="day-top">
+          <div class="day-num">D${d.n}<small>${d.date.split(' ')[0]}</small></div>
+          <div class="day-titlewrap">
+            <h3>${d.title}</h3>
+            <div class="day-en">${d.en}</div>
+            <div class="day-date">${d.date}</div>
+          </div>
+          <div class="day-badge">${d.badge}</div>
+          <div class="chev">▾</div>
+        </div>
+        <div class="day-body">
+          ${d.segs.map(segHTML).join('')}
+          <div class="day-foot"><div class="hotel">${d.hotel}</div><div style="margin-top:6px">${d.foot}</div></div>
+        </div>
+      </div>
+    </div>`).join('');
+  tl.querySelectorAll('.day-top').forEach(top=>{
+    top.onclick = ()=> top.closest('.day').classList.toggle('open');
+  });
+}
+
+function renderSpots(){
+  document.getElementById('spotGrid').innerHTML = SPOTS.map(s=>`
+    <div class="card">
+      <span class="heat ${s.heat}">${s.heat==='hot'?'🔥 爆款':'⭐ 小众'}</span>
+      <h4>${s.nm}</h4><div class="c-en">${s.en}</div>
+      <div class="c-area">📍 ${s.area}</div>
+      <div class="c-body">${s.body}</div>
+    </div>`).join('');
+}
+
+function renderFood(){
+  document.getElementById('foodGrid').innerHTML = FOOD.map(f=>`
+    <div class="card">
+      <h4>${f.nm}</h4><div class="c-en">${f.en}</div>
+      <div class="food-meta"><span class="tag">${f.cuisine}</span><span class="tag price">人均 ${f.price}</span><span class="tag">📍${f.area}</span></div>
+      <div class="must">🍽️ 必点：<b>${f.must}</b></div>
+      <div class="xhs-likes">❤️ ${f.likes}</div>
+    </div>`).join('');
+}
+
+function renderCafes(){
+  document.getElementById('cafeGrid').innerHTML = CAFES.map(c=>`
+    <div class="card cafe-card">
+      <span class="heat hot">${c.heat}</span>
+      <h4>${c.nm}</h4><div class="c-en">${c.en}</div>
+      <div class="vibe">✨ ${c.vibe}</div>
+      <div class="line">☕ 招牌：<b>${c.drink}</b></div>
+      <div class="line">📸 打卡：${c.spot}</div>
+    </div>`).join('');
+  document.getElementById('vlogList').innerHTML = VLOGS.map(v=>`
+    <a href="${v.u}" target="_blank" rel="noopener"><div class="vt">▶ ${v.t}</div><div class="vc">${v.c}</div></a>`).join('');
+}
+
+function renderCharging(){
+  document.getElementById('chargeGrid').innerHTML = CHARGING.map(c=>`
+    <div class="card charge-card">
+      <span class="heat hot">⚡ ${c.role}</span>
+      <h4>${c.nm}</h4><div class="c-en">${c.en}</div>
+      <div class="c-area">📍 ${c.dist}</div>
+      <div class="amen">${c.amen.map(a=>`<span class="yes">${a}</span>`).join('')}</div>
+      <div class="c-body">${c.note}</div>
+      ${c.map?`<a class="map-btn" style="margin-top:12px;align-self:flex-start" target="_blank" rel="noopener" href="${c.map}">🗺️ 导航 Navigate</a>`:''}
+    </div>`).join('');
+}
+
+function renderInfo(){
+  document.getElementById('infoGrid').innerHTML = INFO.map(c=>`
+    <div class="info-card">
+      <h4>${c.ic} ${c.h}</h4>
+      <ul>${c.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+    </div>`).join('');
+}
+
+function renderPack(){
+  const grid = document.getElementById('packGrid');
+  const saved = JSON.parse(localStorage.getItem('socalPack')||'{}');
+  grid.innerHTML = Object.keys(PACK).map(cat=>`
+    <div class="check-col">
+      <h4>${cat}</h4>
+      ${PACK[cat].map((it,idx)=>{
+        const id = cat+idx;
+        return `<label class="check-item">
+          <input type="checkbox" data-id="${id}" ${saved[id]?'checked':''}>
+          <span class="box">✓</span><span class="ci-label">${it}</span>
+        </label>`;
+      }).join('')}
+    </div>`).join('');
+  grid.querySelectorAll('input').forEach(cb=>{
+    cb.onchange = ()=>{
+      const s = JSON.parse(localStorage.getItem('socalPack')||'{}');
+      s[cb.dataset.id] = cb.checked; localStorage.setItem('socalPack', JSON.stringify(s));
+      updatePackBar();
+    };
+  });
+  updatePackBar();
+}
+function updatePackBar(){
+  const all = document.querySelectorAll('#packGrid input');
+  const done = document.querySelectorAll('#packGrid input:checked').length;
+  document.getElementById('packFill').style.width = all.length? (done/all.length*100)+'%':'0%';
+}
+
+/* countdown */
+function tick(){
+  const target = new Date('2026-06-27T08:30:00-07:00').getTime();
+  const now = Date.now();
+  let diff = Math.max(0, target - now);
+  const d = Math.floor(diff/864e5); diff-=d*864e5;
+  const h = Math.floor(diff/36e5); diff-=h*36e5;
+  const m = Math.floor(diff/6e4); diff-=m*6e4;
+  const s = Math.floor(diff/1e3);
+  document.getElementById('cd-d').textContent = d;
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+  const tag = document.getElementById('cd-tag');
+  if(target-now<=0){ tag.textContent = "🎉 出发！一路平安 · Bon voyage!"; }
+  else { tag.textContent = `距离出发还有 ${d} 天 · until we hit the road ✨`; }
+}
+
+/* theme */
+function initTheme(){
+  const btn = document.getElementById('themeBtn');
+  const saved = localStorage.getItem('socalTheme');
+  if(saved){ document.documentElement.dataset.theme = saved; }
+  btn.textContent = document.documentElement.dataset.theme==='dark'?'☀️':'🌙';
+  btn.onclick = ()=>{
+    const next = document.documentElement.dataset.theme==='dark'?'light':'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('socalTheme', next);
+    btn.textContent = next==='dark'?'☀️':'🌙';
+  };
+}
+
+/* reveal on scroll */
+function initReveal(){
+  const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }),{threshold:.12});
+  document.querySelectorAll('.reveal, .sec-head').forEach(el=>{ el.classList.add('reveal'); io.observe(el); });
+}
+
+/* init */
+renderPlanTabs(); renderTimeline(); renderSpots(); renderFood(); renderCafes(); renderCharging(); renderInfo(); renderPack();
+initTheme(); initReveal(); tick(); setInterval(tick,1000);
+</script>
+</body>
+</html>
