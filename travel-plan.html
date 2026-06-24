@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Work+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root {
     --sun: #ff8c42;
@@ -152,6 +154,20 @@
   .xhs b { white-space: nowrap; }
   .day-foot { padding: 13px 20px; background: color-mix(in srgb, var(--leaf) 9%, transparent); font-size: .84rem; border-top: 1px solid var(--line); }
   .day-foot .hotel { font-weight: 600; }
+  .nav-place { color: inherit; text-decoration: none; }
+  .nav-place:hover { color: var(--sun-deep); text-decoration: underline; }
+  .nav-ic { font-size: .82em; opacity: .55; }
+  .nav-place:hover .nav-ic { opacity: 1; }
+  .day-vary { display: inline-block; font-size: .66rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; margin-left: 6px; background: color-mix(in srgb, var(--leaf) 22%, transparent); color: var(--leaf-deep); }
+  .day-vary.same { background: var(--line); color: var(--ink-soft); }
+  :root[data-theme="dark"] .day-vary { color: #84cda0; }
+  @keyframes flashcard { 0% { box-shadow: 0 0 0 0 rgba(246,177,60,.7); } 100% { box-shadow: 0 0 0 16px rgba(246,177,60,0); } }
+  .day.flash > .day-card { animation: flashcard 1s ease-out 2; }
+  .plan-hint { font-size: .82rem; color: var(--ink-soft); margin-top: 6px; padding: 9px 13px; border-radius: 12px; background: color-mix(in srgb, var(--amber) 12%, transparent); border: 1px dashed color-mix(in srgb, var(--amber) 45%, transparent); }
+  .nav-btn { display: inline-flex; align-items: center; gap: 5px; text-decoration: none; font-size: .76rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, #2f7350, #4c9a6b); padding: 6px 11px; border-radius: 999px; transition: .2s; }
+  .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px -6px rgba(47,115,80,.6); }
+  .card-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .card-actions .xhs-link { margin-top: 0; }
 
   /* ---------- CARDS GRID ---------- */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 16px; }
@@ -176,6 +192,26 @@
   .must b { color: var(--ink); }
   .xhs-likes { margin-top: 9px; font-size: .76rem; color: #d11e3f; font-weight: 600; }
   :root[data-theme="dark"] .xhs-likes { color: #ff7d96; }
+  .xhs-link { display: inline-flex; align-items: center; gap: 5px; margin-top: 11px; align-self: flex-start; text-decoration: none; font-size: .76rem; font-weight: 700; color: #fff; background: #ff2e51; padding: 6px 11px; border-radius: 999px; transition: .2s; }
+  .xhs-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px -6px rgba(255,46,81,.6); }
+  .xhs-sources { background: linear-gradient(135deg, #ff2e51, #ff6a3d); color: #fff; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 22px; box-shadow: var(--shadow-lg); }
+  .xhs-sources .xs-title { font-weight: 800; font-size: 1.15rem; }
+  .xhs-sources p { font-size: .86rem; opacity: .95; margin: 6px 0 14px; }
+  .xhs-src-links { display: flex; flex-wrap: wrap; gap: 9px; }
+  .xhs-src-links a { text-decoration: none; font-size: .82rem; font-weight: 600; color: #fff; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); padding: 8px 13px; border-radius: 999px; transition: .2s; }
+  .xhs-src-links a:hover { background: rgba(255,255,255,.3); transform: translateY(-2px); }
+  .xhs-src-links a.feat { background: #fff; color: #e0273f; font-weight: 800; }
+
+  /* ---------- MAP ---------- */
+  #routemap #map { height: 470px; border-radius: var(--radius); box-shadow: var(--shadow); z-index: 1; }
+  .zone-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .zone-btns button { cursor: pointer; font-family: inherit; font-weight: 600; font-size: .84rem; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); transition: .2s; }
+  .zone-btns button:hover { border-color: var(--sun); transform: translateY(-2px); }
+  .zone-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 14px; }
+  .zone-legend span { display: inline-flex; align-items: center; gap: 7px; font-size: .82rem; color: var(--ink-soft); }
+  .zone-legend i { width: 13px; height: 13px; border-radius: 50%; display: inline-block; border: 2px solid #fff; }
+  .leaflet-popup-content { font-family: inherit; font-size: .86rem; }
+  .leaflet-popup-content a { color: var(--sun-deep); font-weight: 600; text-decoration: none; }
 
   /* ---------- CAFES ---------- */
   .cafe-card .vibe { font-size: .8rem; color: var(--sun-deep); font-weight: 600; margin-top: 6px; }
@@ -259,6 +295,7 @@
     <div class="nav-links">
       <a href="#plans">方案 Plans</a>
       <a href="#itinerary">行程 Itinerary</a>
+      <a href="#routemap">地图 Map</a>
       <a href="#spots">必打卡 Spots</a>
       <a href="#food">美食 Food</a>
       <a href="#cafes">咖啡 Cafés</a>
@@ -304,6 +341,7 @@
     </div>
     <div class="plan-tabs reveal" id="planTabs"></div>
     <div class="plan-pace" id="planPace"></div>
+    <div class="plan-hint">👆 切换方案 → 第 <b>4–7 天</b>行程会实时变化并自动展开高亮（前 3 天迪士尼双园 + 最后返程日三方案相同）。每个地点都可点 🧭 直接 Google 导航。</div>
   </div>
 </section>
 
@@ -319,6 +357,26 @@
   </div>
 </section>
 
+<!-- ROUTE MAP -->
+<section id="routemap">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Route Map</div>
+      <h2>🗺️ 路线图 · 多角度规划</h2>
+      <p>全程自驾路线 + 四大区域打卡点。点地图上的圆点看详情，可直接 🧭 导航 或打开 📕 小红书；用下方按钮切换不同视角。</p>
+    </div>
+    <div class="zone-btns">
+      <button onclick="fitZone('all')">🌴 SoCal 全部</button>
+      <button onclick="fitZone('drive')">🚗 自驾全程</button>
+      <button onclick="fitZone('anaheim')">🎢 安纳海姆</button>
+      <button onclick="fitZone('la')">🌆 洛杉矶</button>
+      <button onclick="fitZone('sd')">⚓ 圣地亚哥</button>
+    </div>
+    <div id="map"></div>
+    <div class="zone-legend" id="zoneLegend"></div>
+  </div>
+</section>
+
 <!-- SPOTS -->
 <section id="spots">
   <div class="wrap">
@@ -326,6 +384,19 @@
       <div class="sec-kicker">Must-Visit</div>
       <h2>必打卡景点 🔥</h2>
       <p><span class="heat hot" style="display:inline-block">🔥 爆款</span> 人气最高 · <span class="heat gem" style="display:inline-block">⭐ 小众</span> 当地人私藏。热度为小红书 / 大众点评的综合人气指标，仅供参考。</p>
+    </div>
+    <div class="xhs-sources reveal">
+      <div class="xs-title">📕 小红书攻略来源 · 真实笔记直达</div>
+      <p>本行程参考了这些热门小红书攻略，点击直接看原帖（含你提供的圣地亚哥笔记）。下方每张景点 / 美食 / 咖啡卡片也都带 📕 小红书直达链接。</p>
+      <div class="xhs-src-links">
+        <a class="feat" target="_blank" rel="noopener" href="https://www.xiaohongshu.com/explore/688450210000000013011c12?xsec_token=ABrGqVKc5lJyfVzWjKd_52TCnBuxpYilT3InqP9hi72DE=&amp;xsec_source=pc_search&amp;source=web_explore_feed">⭐ 圣地亚哥·懒人攻略（你的笔记）</a>
+        <a target="_blank" rel="noopener" href="https://www.xiaohongshu.com/mobile/question/83595">洛杉矶旅游攻略</a>
+        <a target="_blank" rel="noopener" href="https://www.xiaohongshu.com/mobile/question/3552356">洛杉矶游玩路线</a>
+        <a target="_blank" rel="noopener" href="https://www.xiaohongshu.com/mobile/question/677147">加州迪士尼攻略</a>
+        <a target="_blank" rel="noopener" href="https://www.xiaohongshu.com/mobile/question/673663">阿纳海姆 Anaheim</a>
+        <a target="_blank" rel="noopener" href="https://www.xiaohongshu.com/mobile/question/453202">洛杉矶美食</a>
+        <a target="_blank" rel="noopener" href="https://www.xiaohongshu.com/mobile/question/3128779">美国亲子游</a>
+      </div>
     </div>
     <div class="grid" id="spotGrid"></div>
   </div>
@@ -634,7 +705,8 @@ const SPOTS = [
   {nm:"Runyon Canyon 城市徒步",en:"Runyon Canyon",area:"Los Angeles",heat:"gem",body:"轻量级登山，山顶俯瞰整个 LA 盆地到太平洋，日落最美；带娃走缓坡线即可。"},
   {nm:"Sunset Cliffs 日落悬崖",en:"Sunset Cliffs Natural Park",area:"San Diego",heat:"hot",body:"圣地亚哥看日落天花板，海蚀崖 + 太平洋金色余晖，傍晚拍剪影；崖边看好娃。"},
   {nm:"Coronado 海滩 & 酒店",en:"Coronado Beach & Hotel del Coronado",area:"San Diego",heat:"hot",body:"金色细沙 + 百年红顶白墙 Hotel del Coronado，明信片同款，跨海大桥风景一流。"},
-  {nm:"Old Towne Orange 古董小镇",en:"Old Towne Orange Plaza",area:"Orange County",heat:"gem",body:"离安纳海姆 15 分钟的复古小镇，古董店 + 老式冰淇淋店 + 圆环广场，文艺慢逛打卡。"}
+  {nm:"Old Towne Orange 古董小镇",en:"Old Towne Orange Plaza",area:"Orange County",heat:"gem",body:"离安纳海姆 15 分钟的复古小镇，古董店 + 老式冰淇淋店 + 圆环广场，文艺慢逛打卡。"},
+  {nm:"USS Midway 中途岛号航母",en:"USS Midway Museum",area:"San Diego",heat:"hot",body:"真·退役航母改成的博物馆，甲板战机 + 飞行模拟，娃超爱；小红书懒人攻略必推。"}
 ];
 
 const FOOD = [
@@ -656,7 +728,10 @@ const FOOD = [
   {nm:"Eggslut",en:"Eggslut",cuisine:"网红蛋堡",price:"$14",must:"Slut 溏心蛋盅 · 早午餐",area:"Grand Central Market",likes:"🔥 5万 排队也值"},
   {nm:"Tacos El Gordo",en:"Tacos El Gordo",cuisine:"提华纳塔可",price:"$12",must:"Adobada 牧师塔可",area:"San Diego",likes:"🔥 3万 SD 必吃街头塔可"},
   {nm:"Liberty Public Market",en:"Liberty Public Market",cuisine:"美食市集",price:"$18",must:"多摊位 · 海鲜 / 甜品",area:"Point Loma, SD",likes:"🔥 年轻人聚集地"},
-  {nm:"Extraordinary Desserts",en:"Extraordinary Desserts",cuisine:"颜值甜品",price:"$15",must:"招牌千层蛋糕 · 法式甜点",area:"Little Italy, SD",likes:"⭐ 颜值甜品打卡"}
+  {nm:"Extraordinary Desserts",en:"Extraordinary Desserts",cuisine:"颜值甜品",price:"$15",must:"招牌千层蛋糕 · 法式甜点",area:"Little Italy, SD",likes:"⭐ 颜值甜品打卡"},
+  {nm:"Snooze A.M. Eatery",en:"Snooze",cuisine:"网红早午餐",price:"$22",must:"松饼拼盘 · Benedict",area:"San Diego",likes:"🔥 小红书懒人攻略推荐"},
+  {nm:"Sunday's Ice Cream",en:"Sunday's Ice Cream",cuisine:"网红冰淇淋",price:"$9",must:"抹茶 / 紫薯 Ube",area:"San Diego",likes:"🔥 ins 抹茶紫薯打卡"},
+  {nm:"Born & Raised",en:"Born and Raised",cuisine:"高级牛排",price:"$80",must:"惠灵顿牛排 · 顶楼酒吧",area:"Little Italy, SD",likes:"⭐ SD 牛排天花板"}
 ];
 
 const INFO = [
@@ -744,6 +819,61 @@ const VLOGS = [
   {t:"A few days in sunny San Diego (travel vlog)", u:"https://www.youtube.com/watch?v=EvWb4UsGftw", c:"Jaida Henderson"}
 ];
 
+/* ============ HELPERS ============ */
+function gmap(q){ return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
+const XHS = {
+  sd:"https://www.xiaohongshu.com/explore/688450210000000013011c12?xsec_token=ABrGqVKc5lJyfVzWjKd_52TCnBuxpYilT3InqP9hi72DE=&xsec_source=pc_search&source=web_explore_feed",
+  la:"https://www.xiaohongshu.com/mobile/question/83595",
+  laFood:"https://www.xiaohongshu.com/mobile/question/453202",
+  disney:"https://www.xiaohongshu.com/mobile/question/677147"
+};
+function xhsFor(area, isFood){
+  const a = area || '';
+  if(/San Diego|\bSD\b|La Jolla|Coronado|Point Loma|Little Italy|Pacific Beach|North Park/i.test(a)) return XHS.sd;
+  if(/Anaheim|Disney|Universal|Orange/i.test(a)) return XHS.disney;
+  if(isFood) return XHS.laFood;
+  return XHS.la;
+}
+
+const ZONE = {
+  drive:   {c:"#64748b", label:"🚗 自驾 / 超充"},
+  anaheim: {c:"#f59e0b", label:"🎢 安纳海姆"},
+  la:      {c:"#a855f7", label:"🌆 洛杉矶"},
+  sd:      {c:"#0ea5e9", label:"⚓ 圣地亚哥"}
+};
+const MAP_POINTS = [
+  {n:"圣克拉拉(出发)", en:"Santa Clara", lat:37.3541, lng:-121.9552, z:"drive"},
+  {n:"Kettleman City 超充+In-N-Out", en:"Supercharger Kettleman City", lat:36.001, lng:-119.961, z:"drive"},
+  {n:"Lost Hills 超充(世界最大)", en:"Tesla Supercharger Oasis Lost Hills", lat:35.615, lng:-119.692, z:"drive"},
+  {n:"Tejon Ranch 超充", en:"Tejon Ranch Supercharger Lebec", lat:34.998, lng:-118.943, z:"drive"},
+  {n:"迪士尼乐园", en:"Disneyland", lat:33.8121, lng:-117.9190, z:"anaheim"},
+  {n:"加州冒险乐园", en:"Disney California Adventure", lat:33.8060, lng:-117.9224, z:"anaheim"},
+  {n:"Anaheim Packing House", en:"Anaheim Packing House", lat:33.8366, lng:-117.9116, z:"anaheim"},
+  {n:"Old Towne Orange 古董小镇", en:"Old Towne Orange Plaza", lat:33.7878, lng:-117.8531, z:"anaheim"},
+  {n:"格里菲斯天文台", en:"Griffith Observatory", lat:34.1184, lng:-118.3004, z:"la"},
+  {n:"好莱坞标志", en:"Hollywood Sign Lake Hollywood Park", lat:34.1357, lng:-118.3215, z:"la"},
+  {n:"圣塔莫尼卡码头", en:"Santa Monica Pier", lat:34.0083, lng:-118.4988, z:"la"},
+  {n:"Melrose 粉红墙", en:"Paul Smith Pink Wall Melrose", lat:34.0838, lng:-118.3690, z:"la"},
+  {n:"Urban Light @ LACMA", en:"Urban Light LACMA", lat:34.0639, lng:-118.3592, z:"la"},
+  {n:"艺术区 / The Last Bookstore", en:"The Last Bookstore DTLA", lat:34.0488, lng:-118.2495, z:"la"},
+  {n:"Grand Central Market", en:"Grand Central Market LA", lat:34.0506, lng:-118.2487, z:"la"},
+  {n:"圣盖博中餐 (SGV)", en:"San Gabriel Valley", lat:34.0900, lng:-118.0900, z:"la"},
+  {n:"环球影城", en:"Universal Studios Hollywood", lat:34.1381, lng:-118.3534, z:"la"},
+  {n:"Hyatt Place Pasadena (住)", en:"Hyatt Place Pasadena", lat:34.1466, lng:-118.1430, z:"la"},
+  {n:"圣地亚哥动物园", en:"San Diego Zoo", lat:32.7353, lng:-117.1490, z:"sd"},
+  {n:"Balboa Park", en:"Balboa Park", lat:32.7341, lng:-117.1446, z:"sd"},
+  {n:"USS Midway 航母", en:"USS Midway Museum", lat:32.7137, lng:-117.1751, z:"sd"},
+  {n:"Old Town 老城", en:"Old Town San Diego", lat:32.7549, lng:-117.1972, z:"sd"},
+  {n:"Coronado / Hotel del", en:"Hotel del Coronado", lat:32.6809, lng:-117.1831, z:"sd"},
+  {n:"Mission Beach / Belmont", en:"Belmont Park Mission Beach", lat:32.7705, lng:-117.2515, z:"sd"},
+  {n:"La Jolla 拉霍亚", en:"La Jolla Cove", lat:32.8508, lng:-117.2713, z:"sd"},
+  {n:"Sunset Cliffs 日落悬崖", en:"Sunset Cliffs Natural Park", lat:32.7157, lng:-117.2544, z:"sd"},
+  {n:"Cabrillo 国家纪念碑", en:"Cabrillo National Monument", lat:32.6722, lng:-117.2416, z:"sd"},
+  {n:"Torrey Pines", en:"Torrey Pines State Beach", lat:32.9337, lng:-117.2590, z:"sd"},
+  {n:"Del Mar Beach", en:"Del Mar Beach", lat:32.9595, lng:-117.2680, z:"sd"},
+  {n:"Best Western Seven Seas (住)", en:"Best Western Seven Seas San Diego", lat:32.7676, lng:-117.1610, z:"sd"}
+];
+
 /* ============ RENDER ============ */
 let curPlan = "A";
 
@@ -760,16 +890,24 @@ function renderPlanTabs(){
   }).join('');
   box.querySelectorAll('.plan-tab').forEach(t=>{
     t.onclick = ()=>{ curPlan = t.dataset.plan; renderPlanTabs(); renderTimeline();
-      document.getElementById('planPace').textContent = PLAN_META[curPlan].pace; };
+      if(window.drawTripMap) window.drawTripMap();
+      document.getElementById('planPace').textContent = PLAN_META[curPlan].pace;
+      setTimeout(()=>{ const d4=document.querySelector('.day[data-i="3"]');
+        if(d4){ d4.scrollIntoView({behavior:'smooth',block:'start'}); d4.classList.add('flash'); setTimeout(()=>d4.classList.remove('flash'),2000); } },80);
+    };
   });
   document.getElementById('planPace').textContent = PLAN_META[curPlan].pace;
 }
 
 function segHTML(s){
+  const isPlace = s.en && !/charge|pool|slow morning/i.test(s.en);
+  const name = isPlace
+    ? `<a class="nav-place" target="_blank" rel="noopener" href="${gmap(s.q||s.en)}">${s.nm} <span class="nm-en">${s.en}</span> <span class="nav-ic">🧭</span></a>`
+    : `${s.nm} <span class="nm-en">${s.en||''}</span>`;
   return `<div class="seg">
     <div class="seg-time"><div class="seg-ic">${s.ic}</div><div class="seg-clock">${s.t}</div></div>
     <div>
-      <div class="seg-name">${s.nm} <span class="nm-en">${s.en||''}</span></div>
+      <div class="seg-name">${name}</div>
       ${s.meta?`<div class="seg-meta">${s.meta}</div>`:''}
       ${s.note?`<div class="seg-note">${s.note}</div>`:''}
       ${s.kid?`<div class="seg-note kid">👶 ${s.kid}</div>`:''}
@@ -781,15 +919,18 @@ function segHTML(s){
 function renderTimeline(){
   const tl = document.getElementById('timeline');
   const days = ITINERARY[curPlan];
-  tl.innerHTML = days.map((d,i)=>`
-    <div class="day ${i===0?'open':''}" data-i="${i}">
+  tl.innerHTML = days.map((d,i)=>{
+    const varies = (i>=3 && i<=6);
+    const openCls = (i===0 || varies) ? 'open' : '';
+    return `
+    <div class="day ${openCls}" data-i="${i}">
       <div class="day-card">
         <div class="day-top">
           <div class="day-num">D${d.n}<small>${d.date.split(' ')[0]}</small></div>
           <div class="day-titlewrap">
             <h3>${d.title}</h3>
             <div class="day-en">${d.en}</div>
-            <div class="day-date">${d.date}</div>
+            <div class="day-date">${d.date} ${varies?`<span class="day-vary">✦ Plan ${curPlan} 专属</span>`:`<span class="day-vary same">三方案通用</span>`}</div>
           </div>
           <div class="day-badge">${d.badge}</div>
           <div class="chev">▾</div>
@@ -799,7 +940,8 @@ function renderTimeline(){
           <div class="day-foot"><div class="hotel">${d.hotel}</div><div style="margin-top:6px">${d.foot}</div></div>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   tl.querySelectorAll('.day-top').forEach(top=>{
     top.onclick = ()=> top.closest('.day').classList.toggle('open');
   });
@@ -812,6 +954,10 @@ function renderSpots(){
       <h4>${s.nm}</h4><div class="c-en">${s.en}</div>
       <div class="c-area">📍 ${s.area}</div>
       <div class="c-body">${s.body}</div>
+      <div class="card-actions">
+        <a class="nav-btn" target="_blank" rel="noopener" href="${gmap(s.en + ' ' + s.area)}">🧭 导航 Navigate</a>
+        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsFor(s.area)}">📕 小红书</a>
+      </div>
     </div>`).join('');
 }
 
@@ -822,6 +968,10 @@ function renderFood(){
       <div class="food-meta"><span class="tag">${f.cuisine}</span><span class="tag price">人均 ${f.price}</span><span class="tag">📍${f.area}</span></div>
       <div class="must">🍽️ 必点：<b>${f.must}</b></div>
       <div class="xhs-likes">❤️ ${f.likes}</div>
+      <div class="card-actions">
+        <a class="nav-btn" target="_blank" rel="noopener" href="${gmap(f.en + ' ' + f.area)}">🧭 导航</a>
+        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsFor(f.area, true)}">📕 小红书</a>
+      </div>
     </div>`).join('');
 }
 
@@ -833,6 +983,10 @@ function renderCafes(){
       <div class="vibe">✨ ${c.vibe}</div>
       <div class="line">☕ 招牌：<b>${c.drink}</b></div>
       <div class="line">📸 打卡：${c.spot}</div>
+      <div class="card-actions">
+        <a class="nav-btn" target="_blank" rel="noopener" href="${gmap(c.nm + ' ' + c.en)}">🧭 导航</a>
+        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsFor(c.en)}">📕 小红书</a>
+      </div>
     </div>`).join('');
   document.getElementById('vlogList').innerHTML = VLOGS.map(v=>`
     <a href="${v.u}" target="_blank" rel="noopener"><div class="vt">▶ ${v.t}</div><div class="vc">${v.c}</div></a>`).join('');
@@ -887,6 +1041,37 @@ function updatePackBar(){
   document.getElementById('packFill').style.width = all.length? (done/all.length*100)+'%':'0%';
 }
 
+/* map */
+let _map;
+function initMap(){
+  if(typeof L === 'undefined' || !document.getElementById('map')) return;
+  _map = L.map('map', {scrollWheelZoom:false}).setView([34.0,-118.2], 7);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+    {attribution:'© OpenStreetMap © CARTO', maxZoom:19}).addTo(_map);
+  L.polyline([[37.3541,-121.9552],[36.001,-119.961],[35.615,-119.692],[34.998,-118.943],
+    [33.8121,-117.9190],[34.1184,-118.3004],[32.7341,-117.1446]],
+    {color:'#f2660a', weight:3, dashArray:'6,9', opacity:.7}).addTo(_map);
+  MAP_POINTS.forEach(p=>{
+    const xhs = p.z==='sd'?XHS.sd : p.z==='anaheim'?XHS.disney : XHS.la;
+    const cityHint = p.z==='sd'?' San Diego' : p.z==='anaheim'?' Anaheim' : p.z==='la'?' Los Angeles' : ' California';
+    L.circleMarker([p.lat,p.lng], {radius:7, color:'#fff', weight:2, fillColor:ZONE[p.z].c, fillOpacity:1})
+     .bindPopup(`<b>${p.n}</b><br><span style="color:#888">${p.en}</span><br>
+       <a href="${gmap(p.en + cityHint)}" target="_blank" rel="noopener">🧭 导航</a> &nbsp;·&nbsp;
+       <a href="${xhs}" target="_blank" rel="noopener">📕 小红书</a>`)
+     .addTo(_map);
+  });
+  document.getElementById('zoneLegend').innerHTML = Object.keys(ZONE).map(z=>
+    `<span><i style="background:${ZONE[z].c}"></i>${ZONE[z].label}</span>`).join('');
+  fitZone('all');
+}
+function fitZone(z){
+  if(!_map) return;
+  const pts = MAP_POINTS.filter(p=> z==='drive' ? true : (z==='all' ? p.z!=='drive' : p.z===z))
+                        .map(p=>[p.lat,p.lng]);
+  _map.fitBounds(pts, {padding:[40,40]});
+}
+window.drawTripMap = function(){ if(_map) setTimeout(()=>_map.invalidateSize(),100); };
+
 /* countdown */
 function tick(){
   const target = new Date('2026-06-27T08:30:00-07:00').getTime();
@@ -927,7 +1112,7 @@ function initReveal(){
 
 /* init */
 renderPlanTabs(); renderTimeline(); renderSpots(); renderFood(); renderCafes(); renderCharging(); renderInfo(); renderPack();
-initTheme(); initReveal(); tick(); setInterval(tick,1000);
+initTheme(); initReveal(); initMap(); tick(); setInterval(tick,1000);
 </script>
 </body>
 </html>
