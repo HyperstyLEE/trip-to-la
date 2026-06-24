@@ -202,6 +202,32 @@
   .xhs-src-links a:hover { background: rgba(255,255,255,.3); transform: translateY(-2px); }
   .xhs-src-links a.feat { background: #fff; color: #e0273f; font-weight: 800; }
 
+  /* ---------- CITY GROUPS + PLANNER ---------- */
+  .city-group { margin-bottom: 28px; }
+  .city-h { font-size: 1.2rem; font-weight: 800; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--line); }
+  .city-h span { font-size: .8rem; font-weight: 500; color: var(--ink-soft); }
+  .plan-citytabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .plan-citytabs button { cursor: pointer; font-family: inherit; font-weight: 700; font-size: .9rem; padding: 9px 18px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); transition: .2s; }
+  .plan-citytabs button.on { background: linear-gradient(135deg, var(--sun), var(--sun-deep)); color: #fff; border-color: transparent; }
+  .plan-pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .pick-item { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); cursor: pointer; font-size: .9rem; transition: .15s; }
+  .pick-item:hover { border-color: var(--sun); }
+  .pick-item input { width: 18px; height: 18px; accent-color: var(--sun-deep); }
+  .pick-item.sel { border-color: var(--sun); background: color-mix(in srgb, var(--sun) 12%, var(--card)); }
+  .pick-cafe { color: #e0273f; }
+  #planGo { font-size: .95rem; padding: 12px 22px; border: none; cursor: pointer; }
+  .plan-out { margin-top: 20px; }
+  .plan-out-head { font-weight: 800; font-size: 1.05rem; margin-bottom: 12px; }
+  .plan-steps { list-style: none; padding: 0; }
+  .plan-steps li { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); margin-bottom: 8px; font-size: .92rem; }
+  .plan-steps li .seq { width: 26px; height: 26px; border-radius: 50%; background: var(--sun); color: #fff; font-weight: 700; display: grid; place-items: center; flex: none; font-size: .82rem; }
+  .plan-steps li.meal { background: color-mix(in srgb, var(--amber) 16%, var(--card)); border-style: dashed; }
+  .plan-steps li.meal .seq { background: var(--amber); }
+  .ps-name { flex: 1; font-weight: 600; }
+  .mini { text-decoration: none; font-size: .82rem; font-weight: 700; padding: 5px 9px; border-radius: 8px; background: var(--line); color: var(--ink); }
+  .mini.xhs { background: #ff2e51; color: #fff; }
+  .num-pin { background: #e0273f; color: #fff; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .8rem; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+
   /* ---------- MAP ---------- */
   #routemap #map { height: 470px; border-radius: var(--radius); box-shadow: var(--shadow); z-index: 1; }
   .zone-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
@@ -296,6 +322,7 @@
       <a href="#plans">方案 Plans</a>
       <a href="#itinerary">行程 Itinerary</a>
       <a href="#routemap">地图 Map</a>
+      <a href="#planner">规划器 Planner</a>
       <a href="#spots">必打卡 Spots</a>
       <a href="#food">美食 Food</a>
       <a href="#cafes">咖啡 Cafés</a>
@@ -374,6 +401,21 @@
     </div>
     <div id="map"></div>
     <div class="zone-legend" id="zoneLegend"></div>
+  </div>
+</section>
+
+<!-- PLANNER -->
+<section id="planner">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="sec-kicker">Build Your Day</div>
+      <h2>🪄 行程规划器 · 选景点 → 自动排序 + 配餐</h2>
+      <p>① 选城市 → ② 勾选想去的景点 / 咖啡馆 → ③ 点“生成”。我会按<b>就近顺序</b>帮你排好，插入<b>午餐 / 晚餐</b>推荐，并在上方地图画出带编号的路线（点“整条路线导航”直接用 Google 地图走完全程）。</p>
+    </div>
+    <div class="plan-citytabs" id="planCityTabs"></div>
+    <div class="plan-pick" id="planPick"></div>
+    <button class="nav-btn" id="planGo">🪄 生成最优顺序 + 配餐</button>
+    <div class="plan-out" id="planOut"></div>
   </div>
 </section>
 
@@ -821,6 +863,8 @@ const VLOGS = [
 
 /* ============ HELPERS ============ */
 function gmap(q){ return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q); }
+function gmapDir(stops){ return "https://www.google.com/maps/dir/" + stops.map(s=>encodeURIComponent(s)).join('/'); }
+function xhsSearch(kw){ return "https://www.xiaohongshu.com/search_result?keyword=" + encodeURIComponent(kw); }
 const XHS = {
   sd:"https://www.xiaohongshu.com/explore/688450210000000013011c12?xsec_token=ABrGqVKc5lJyfVzWjKd_52TCnBuxpYilT3InqP9hi72DE=&xsec_source=pc_search&source=web_explore_feed",
   la:"https://www.xiaohongshu.com/mobile/question/83595",
@@ -837,42 +881,61 @@ function xhsFor(area, isFood){
 
 const ZONE = {
   drive:   {c:"#64748b", label:"🚗 自驾 / 超充"},
-  anaheim: {c:"#f59e0b", label:"🎢 安纳海姆"},
+  anaheim: {c:"#f59e0b", label:"🎢 安纳海姆 / OC"},
   la:      {c:"#a855f7", label:"🌆 洛杉矶"},
-  sd:      {c:"#0ea5e9", label:"⚓ 圣地亚哥"}
+  sd:      {c:"#0ea5e9", label:"⚓ 圣地亚哥"},
+  cafe:    {c:"#ff2e51", label:"☕ 咖啡馆"}
 };
 const MAP_POINTS = [
-  {n:"圣克拉拉(出发)", en:"Santa Clara", lat:37.3541, lng:-121.9552, z:"drive"},
-  {n:"Kettleman City 超充+In-N-Out", en:"Supercharger Kettleman City", lat:36.001, lng:-119.961, z:"drive"},
-  {n:"Lost Hills 超充(世界最大)", en:"Tesla Supercharger Oasis Lost Hills", lat:35.615, lng:-119.692, z:"drive"},
-  {n:"Tejon Ranch 超充", en:"Tejon Ranch Supercharger Lebec", lat:34.998, lng:-118.943, z:"drive"},
-  {n:"迪士尼乐园", en:"Disneyland", lat:33.8121, lng:-117.9190, z:"anaheim"},
-  {n:"加州冒险乐园", en:"Disney California Adventure", lat:33.8060, lng:-117.9224, z:"anaheim"},
-  {n:"Anaheim Packing House", en:"Anaheim Packing House", lat:33.8366, lng:-117.9116, z:"anaheim"},
-  {n:"Old Towne Orange 古董小镇", en:"Old Towne Orange Plaza", lat:33.7878, lng:-117.8531, z:"anaheim"},
-  {n:"格里菲斯天文台", en:"Griffith Observatory", lat:34.1184, lng:-118.3004, z:"la"},
-  {n:"好莱坞标志", en:"Hollywood Sign Lake Hollywood Park", lat:34.1357, lng:-118.3215, z:"la"},
-  {n:"圣塔莫尼卡码头", en:"Santa Monica Pier", lat:34.0083, lng:-118.4988, z:"la"},
-  {n:"Melrose 粉红墙", en:"Paul Smith Pink Wall Melrose", lat:34.0838, lng:-118.3690, z:"la"},
-  {n:"Urban Light @ LACMA", en:"Urban Light LACMA", lat:34.0639, lng:-118.3592, z:"la"},
-  {n:"艺术区 / The Last Bookstore", en:"The Last Bookstore DTLA", lat:34.0488, lng:-118.2495, z:"la"},
-  {n:"Grand Central Market", en:"Grand Central Market LA", lat:34.0506, lng:-118.2487, z:"la"},
-  {n:"圣盖博中餐 (SGV)", en:"San Gabriel Valley", lat:34.0900, lng:-118.0900, z:"la"},
-  {n:"环球影城", en:"Universal Studios Hollywood", lat:34.1381, lng:-118.3534, z:"la"},
-  {n:"Hyatt Place Pasadena (住)", en:"Hyatt Place Pasadena", lat:34.1466, lng:-118.1430, z:"la"},
-  {n:"圣地亚哥动物园", en:"San Diego Zoo", lat:32.7353, lng:-117.1490, z:"sd"},
-  {n:"Balboa Park", en:"Balboa Park", lat:32.7341, lng:-117.1446, z:"sd"},
-  {n:"USS Midway 航母", en:"USS Midway Museum", lat:32.7137, lng:-117.1751, z:"sd"},
-  {n:"Old Town 老城", en:"Old Town San Diego", lat:32.7549, lng:-117.1972, z:"sd"},
-  {n:"Coronado / Hotel del", en:"Hotel del Coronado", lat:32.6809, lng:-117.1831, z:"sd"},
-  {n:"Mission Beach / Belmont", en:"Belmont Park Mission Beach", lat:32.7705, lng:-117.2515, z:"sd"},
-  {n:"La Jolla 拉霍亚", en:"La Jolla Cove", lat:32.8508, lng:-117.2713, z:"sd"},
-  {n:"Sunset Cliffs 日落悬崖", en:"Sunset Cliffs Natural Park", lat:32.7157, lng:-117.2544, z:"sd"},
-  {n:"Cabrillo 国家纪念碑", en:"Cabrillo National Monument", lat:32.6722, lng:-117.2416, z:"sd"},
-  {n:"Torrey Pines", en:"Torrey Pines State Beach", lat:32.9337, lng:-117.2590, z:"sd"},
-  {n:"Del Mar Beach", en:"Del Mar Beach", lat:32.9595, lng:-117.2680, z:"sd"},
-  {n:"Best Western Seven Seas (住)", en:"Best Western Seven Seas San Diego", lat:32.7676, lng:-117.1610, z:"sd"}
+  {n:"圣克拉拉(出发)", en:"Santa Clara, CA", lat:37.3541, lng:-121.9552, z:"drive", t:"drive"},
+  {n:"Kettleman City 超充+In-N-Out", en:"In-N-Out Kettleman City", lat:35.98616, lng:-119.95926, z:"drive", t:"drive"},
+  {n:"Lost Hills 超充(世界最大)", en:"Tesla Supercharger Lost Hills", lat:35.63239, lng:-119.67766, z:"drive", t:"drive"},
+  {n:"Tejon Ranch 超充", en:"Outlets at Tejon Lebec", lat:34.9979, lng:-118.943, z:"drive", t:"drive"},
+  {n:"迪士尼乐园", en:"Disneyland Park Anaheim", lat:33.81365, lng:-117.91974, z:"anaheim", t:"spot"},
+  {n:"加州冒险乐园", en:"Disney California Adventure", lat:33.806, lng:-117.9224, z:"anaheim", t:"spot"},
+  {n:"Anaheim Packing House", en:"Anaheim Packing House", lat:33.83151, lng:-117.91194, z:"anaheim", t:"spot"},
+  {n:"Old Towne Orange 古董小镇", en:"Old Towne Orange Plaza", lat:33.78826, lng:-117.85445, z:"anaheim", t:"spot"},
+  {n:"Ramada Anaheim (住)", en:"Ramada by Wyndham Anaheim Convention Center", lat:33.8025, lng:-117.917, z:"anaheim", t:"hotel"},
+  {n:"格里菲斯天文台", en:"Griffith Observatory", lat:34.11822, lng:-118.30029, z:"la", t:"spot"},
+  {n:"好莱坞标志", en:"Lake Hollywood Park Hollywood Sign", lat:34.12689, lng:-118.32592, z:"la", t:"spot"},
+  {n:"圣塔莫尼卡码头", en:"Santa Monica Pier", lat:34.0089, lng:-118.4974, z:"la", t:"spot"},
+  {n:"Melrose 粉红墙", en:"Paul Smith Pink Wall Melrose", lat:34.08394, lng:-118.36876, z:"la", t:"spot"},
+  {n:"Urban Light @ LACMA", en:"LACMA Urban Light", lat:34.06374, lng:-118.35894, z:"la", t:"spot"},
+  {n:"The Last Bookstore", en:"The Last Bookstore Los Angeles", lat:34.04767, lng:-118.24972, z:"la", t:"spot"},
+  {n:"Grand Central Market", en:"Grand Central Market Los Angeles", lat:34.05073, lng:-118.2488, z:"la", t:"spot"},
+  {n:"圣盖博中餐 (SGV)", en:"San Gabriel CA", lat:34.0991, lng:-118.10856, z:"la", t:"spot"},
+  {n:"环球影城", en:"Universal Studios Hollywood", lat:34.13923, lng:-118.35438, z:"la", t:"spot"},
+  {n:"Hyatt Place Pasadena (住)", en:"Hyatt Place Pasadena", lat:34.14493, lng:-118.14189, z:"la", t:"hotel"},
+  {n:"圣地亚哥动物园", en:"San Diego Zoo", lat:32.73599, lng:-117.15065, z:"sd", t:"spot"},
+  {n:"Balboa Park", en:"Balboa Park San Diego", lat:32.73168, lng:-117.14653, z:"sd", t:"spot"},
+  {n:"USS Midway 航母", en:"USS Midway Museum", lat:32.7138, lng:-117.1752, z:"sd", t:"spot"},
+  {n:"Old Town 老城", en:"Old Town San Diego", lat:32.75431, lng:-117.19689, z:"sd", t:"spot"},
+  {n:"Coronado / Hotel del", en:"Hotel del Coronado", lat:32.67998, lng:-117.17843, z:"sd", t:"spot"},
+  {n:"Mission Beach / Belmont", en:"Belmont Park Mission Beach", lat:32.77089, lng:-117.25205, z:"sd", t:"spot"},
+  {n:"La Jolla 拉霍亚", en:"La Jolla Cove", lat:32.8505, lng:-117.27304, z:"sd", t:"spot"},
+  {n:"Sunset Cliffs 日落悬崖", en:"Sunset Cliffs Natural Park", lat:32.72445, lng:-117.25753, z:"sd", t:"spot"},
+  {n:"Cabrillo 国家纪念碑", en:"Cabrillo National Monument", lat:32.67223, lng:-117.24094, z:"sd", t:"spot"},
+  {n:"Torrey Pines", en:"Torrey Pines State Beach", lat:32.9314, lng:-117.26041, z:"sd", t:"spot"},
+  {n:"Del Mar Beach", en:"Del Mar Beach CA", lat:32.9595, lng:-117.2680, z:"sd", t:"spot"},
+  {n:"Best Western Seven Seas (住)", en:"Best Western Seven Seas San Diego", lat:32.76075, lng:-117.16589, z:"sd", t:"hotel"},
+  {n:"☕ Alfred Coffee", en:"Alfred Coffee Melrose Place", lat:34.0838, lng:-118.3717, z:"cafe", t:"cafe"},
+  {n:"☕ Verve Coffee", en:"Verve Coffee Roasters Spring St LA", lat:34.0466, lng:-118.251, z:"cafe", t:"cafe"},
+  {n:"☕ Maru Coffee", en:"Maru Coffee Los Feliz", lat:34.10656, lng:-118.28728, z:"cafe", t:"cafe"},
+  {n:"☕ Cafe Tondo", en:"Cafe Tondo Chinatown LA", lat:34.06268, lng:-118.23634, z:"cafe", t:"cafe"},
+  {n:"☕ Communal Coffee", en:"Communal Coffee North Park San Diego", lat:32.7483, lng:-117.13914, z:"cafe", t:"cafe"},
+  {n:"☕ Parakeet Cafe", en:"Parakeet Cafe La Jolla", lat:32.84484, lng:-117.27448, z:"cafe", t:"cafe"},
+  {n:"☕ Holy Matcha", en:"Holy Matcha San Diego", lat:32.746, lng:-117.13, z:"cafe", t:"cafe"},
+  {n:"☕ Holsem Coffee", en:"Holsem Coffee North Park", lat:32.74823, lng:-117.13059, z:"cafe", t:"cafe"},
+  {n:"☕ Palmy's", en:"Palmys Pacific Beach San Diego", lat:32.798, lng:-117.254, z:"cafe", t:"cafe"}
 ];
+const CITY_OF = p => p.z==='drive' ? null : (p.lat<33.3?'SD':(p.lat<33.95?'OC':'LA'));
+const CITY_LABEL = {LA:"🌆 洛杉矶 LA", SD:"⚓ 圣地亚哥 SD", OC:"🎢 安纳海姆 / 橙县 OC"};
+const CITY_ANCHOR = {LA:"Hyatt Place Pasadena", SD:"Best Western Seven Seas (住)", OC:"Ramada Anaheim (住)"};
+const CITY_MEALS = {
+  LA:{lunch:{nm:"Grand Central Market 百年市场",q:"Grand Central Market Los Angeles"}, dinner:{nm:"隆兴记 / 圣盖博中餐",q:"Long Xing Ji San Gabriel"}},
+  SD:{lunch:{nm:"Café Coyote (Old Town 墨西哥)",q:"Cafe Coyote Old Town San Diego"}, dinner:{nm:"Convoy 亚洲街",q:"Convoy Street San Diego"}},
+  OC:{lunch:{nm:"Anaheim Packing House",q:"Anaheim Packing House"}, dinner:{nm:"Naples (Downtown Disney)",q:"Naples Ristorante Downtown Disney Anaheim"}}
+};
 
 /* ============ RENDER ============ */
 let curPlan = "A";
@@ -947,18 +1010,32 @@ function renderTimeline(){
   });
 }
 
-function renderSpots(){
-  document.getElementById('spotGrid').innerHTML = SPOTS.map(s=>`
-    <div class="card">
+function cityOfArea(a){
+  if(/San Diego|\bSD\b|La Jolla|Coronado|Point Loma|Little Italy|Pacific Beach|North Park|Balboa|Sunset Cliffs|Torrey|Del Mar|Mission Beach/i.test(a)) return 'SD';
+  if(/Anaheim|Orange|Disney/i.test(a)) return 'OC';
+  return 'LA';
+}
+function spotCard(s){
+  return `<div class="card">
       <span class="heat ${s.heat}">${s.heat==='hot'?'🔥 爆款':'⭐ 小众'}</span>
       <h4>${s.nm}</h4><div class="c-en">${s.en}</div>
       <div class="c-area">📍 ${s.area}</div>
       <div class="c-body">${s.body}</div>
       <div class="card-actions">
-        <a class="nav-btn" target="_blank" rel="noopener" href="${gmap(s.en + ' ' + s.area)}">🧭 导航 Navigate</a>
-        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsFor(s.area)}">📕 小红书</a>
+        <a class="nav-btn" target="_blank" rel="noopener" href="${gmap(s.en + ' ' + s.area)}">🧭 导航</a>
+        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsSearch(s.nm)}">📕 小红书</a>
       </div>
-    </div>`).join('');
+    </div>`;
+}
+function renderSpots(){
+  const groups={OC:[],LA:[],SD:[]};
+  SPOTS.forEach(s=>groups[cityOfArea(s.area)].push(s));
+  const box=document.getElementById('spotGrid'); box.className='';
+  box.innerHTML = ['OC','LA','SD'].map(c=> groups[c].length? `
+    <div class="city-group">
+      <h3 class="city-h">${CITY_LABEL[c]} <span>· ${groups[c].length} 个打卡点</span></h3>
+      <div class="grid">${groups[c].map(spotCard).join('')}</div>
+    </div>`:'').join('');
 }
 
 function renderFood(){
@@ -970,7 +1047,7 @@ function renderFood(){
       <div class="xhs-likes">❤️ ${f.likes}</div>
       <div class="card-actions">
         <a class="nav-btn" target="_blank" rel="noopener" href="${gmap(f.en + ' ' + f.area)}">🧭 导航</a>
-        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsFor(f.area, true)}">📕 小红书</a>
+        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsSearch(f.nm + ' ' + f.area)}">📕 小红书</a>
       </div>
     </div>`).join('');
 }
@@ -985,7 +1062,7 @@ function renderCafes(){
       <div class="line">📸 打卡：${c.spot}</div>
       <div class="card-actions">
         <a class="nav-btn" target="_blank" rel="noopener" href="${gmap(c.nm + ' ' + c.en)}">🧭 导航</a>
-        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsFor(c.en)}">📕 小红书</a>
+        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsSearch(c.nm + ' ' + c.en)}">📕 小红书</a>
       </div>
     </div>`).join('');
   document.getElementById('vlogList').innerHTML = VLOGS.map(v=>`
@@ -1052,12 +1129,10 @@ function initMap(){
     [33.8121,-117.9190],[34.1184,-118.3004],[32.7341,-117.1446]],
     {color:'#f2660a', weight:3, dashArray:'6,9', opacity:.7}).addTo(_map);
   MAP_POINTS.forEach(p=>{
-    const xhs = p.z==='sd'?XHS.sd : p.z==='anaheim'?XHS.disney : XHS.la;
-    const cityHint = p.z==='sd'?' San Diego' : p.z==='anaheim'?' Anaheim' : p.z==='la'?' Los Angeles' : ' California';
     L.circleMarker([p.lat,p.lng], {radius:7, color:'#fff', weight:2, fillColor:ZONE[p.z].c, fillOpacity:1})
      .bindPopup(`<b>${p.n}</b><br><span style="color:#888">${p.en}</span><br>
-       <a href="${gmap(p.en + cityHint)}" target="_blank" rel="noopener">🧭 导航</a> &nbsp;·&nbsp;
-       <a href="${xhs}" target="_blank" rel="noopener">📕 小红书</a>`)
+       <a href="${gmap(p.en)}" target="_blank" rel="noopener">🧭 导航</a> &nbsp;·&nbsp;
+       <a href="${xhsSearch(p.n)}" target="_blank" rel="noopener">📕 小红书</a>`)
      .addTo(_map);
   });
   document.getElementById('zoneLegend').innerHTML = Object.keys(ZONE).map(z=>
@@ -1071,6 +1146,59 @@ function fitZone(z){
   _map.fitBounds(pts, {padding:[40,40]});
 }
 window.drawTripMap = function(){ if(_map) setTimeout(()=>_map.invalidateSize(),100); };
+
+/* planner */
+let planCity = 'SD', planSel = new Set(), _planLayer;
+function renderPlanner(){
+  document.getElementById('planCityTabs').innerHTML = ['LA','SD','OC'].map(c=>
+    `<button class="${c===planCity?'on':''}" onclick="setPlanCity('${c}')">${CITY_LABEL[c]}</button>`).join('');
+  const pts = MAP_POINTS.filter(p=> CITY_OF(p)===planCity && (p.t==='spot'||p.t==='cafe'));
+  document.getElementById('planPick').innerHTML = pts.map(p=>{
+    const sel = planSel.has(p.en);
+    return `<label class="pick-item ${sel?'sel':''} ${p.t==='cafe'?'pick-cafe':''}">
+      <input type="checkbox" ${sel?'checked':''} onchange="togglePick(this,'${p.en.replace(/'/g,'')}')"> ${p.n}</label>`;
+  }).join('');
+}
+function setPlanCity(c){ planCity=c; planSel.clear(); document.getElementById('planOut').innerHTML=''; renderPlanner(); }
+function togglePick(el, en){ if(el.checked) planSel.add(en); else planSel.delete(en); el.closest('.pick-item').classList.toggle('sel', el.checked); }
+function planDist(a,b){ const dx=a.lat-b.lat, dy=(a.lng-b.lng)*0.83; return dx*dx+dy*dy; }
+function generatePlan(){
+  const out = document.getElementById('planOut');
+  const sel = MAP_POINTS.filter(p=>planSel.has(p.en));
+  if(sel.length===0){ out.innerHTML='<div class="plan-out-head">请先勾选至少一个景点 🙂</div>'; return; }
+  const anchor = MAP_POINTS.find(p=>p.n===CITY_ANCHOR[planCity]) || sel[0];
+  const rem = sel.slice(), ordered=[]; let cur=anchor;
+  while(rem.length){ let bi=0,bd=1e9; rem.forEach((p,i)=>{const d=planDist(cur,p); if(d<bd){bd=d;bi=i;}}); cur=rem[bi]; ordered.push(cur); rem.splice(bi,1); }
+  const M=CITY_MEALS[planCity], half=Math.ceil(ordered.length/2);
+  let html=`<div class="plan-out-head">🪄 ${CITY_LABEL[planCity]} · 为你排好的顺序（从 ${anchor.n} 就近出发）</div><ol class="plan-steps">`;
+  let seq=1;
+  ordered.forEach((p,i)=>{
+    html+=`<li><span class="seq">${seq++}</span><span class="ps-name">${p.n}</span>
+      <a class="mini" target="_blank" rel="noopener" href="${gmap(p.en)}">🧭 导航</a>
+      <a class="mini xhs" target="_blank" rel="noopener" href="${xhsSearch(p.n)}">📕</a></li>`;
+    if(i===half-1){ html+=`<li class="meal"><span class="seq">🍴</span><span class="ps-name">午餐：${M.lunch.nm}</span>
+      <a class="mini" target="_blank" rel="noopener" href="${gmap(M.lunch.q)}">🧭 导航</a>
+      <a class="mini xhs" target="_blank" rel="noopener" href="${xhsSearch(M.lunch.nm)}">📕</a></li>`; }
+  });
+  html+=`<li class="meal"><span class="seq">🍽️</span><span class="ps-name">晚餐：${M.dinner.nm}</span>
+    <a class="mini" target="_blank" rel="noopener" href="${gmap(M.dinner.q)}">🧭 导航</a>
+    <a class="mini xhs" target="_blank" rel="noopener" href="${xhsSearch(M.dinner.nm)}">📕</a></li></ol>`;
+  html+=`<a class="nav-btn" target="_blank" rel="noopener" href="${gmapDir([anchor.en, ...ordered.map(p=>p.en)])}">🗺️ 用 Google 地图打开整条路线导航</a>`;
+  out.innerHTML=html;
+  drawPlanRoute(anchor, ordered);
+}
+function drawPlanRoute(anchor, ordered){
+  if(!_map) return;
+  if(_planLayer) _map.removeLayer(_planLayer);
+  _planLayer = L.layerGroup().addTo(_map);
+  const path=[[anchor.lat,anchor.lng]];
+  ordered.forEach((p,i)=>{ path.push([p.lat,p.lng]);
+    L.marker([p.lat,p.lng], {icon:L.divIcon({className:'num-pin', html:(i+1), iconSize:[24,24], iconAnchor:[12,12]})}).addTo(_planLayer);
+  });
+  L.polyline(path, {color:'#e0273f', weight:4, opacity:.85}).addTo(_planLayer);
+  _map.fitBounds(path, {padding:[55,55]});
+  document.getElementById('routemap').scrollIntoView({behavior:'smooth', block:'start'});
+}
 
 /* countdown */
 function tick(){
@@ -1111,7 +1239,8 @@ function initReveal(){
 }
 
 /* init */
-renderPlanTabs(); renderTimeline(); renderSpots(); renderFood(); renderCafes(); renderCharging(); renderInfo(); renderPack();
+renderPlanTabs(); renderTimeline(); renderSpots(); renderFood(); renderCafes(); renderCharging(); renderInfo(); renderPack(); renderPlanner();
+document.getElementById('planGo').onclick = generatePlan;
 initTheme(); initReveal(); initMap(); tick(); setInterval(tick,1000);
 </script>
 </body>
