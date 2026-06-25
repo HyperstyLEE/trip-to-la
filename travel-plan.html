@@ -102,7 +102,7 @@
   /* ---------- SECTION ---------- */
   section { padding: 56px 0; }
   .sec-head { margin-bottom: 28px; }
-  .sec-kicker { color: var(--sun-deep); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: .76rem; }
+  .sec-kicker { color: var(--sun-deep); font-family: 'Playfair Display', 'Noto Sans SC', serif; font-style: italic; font-weight: 500; font-size: 1.06rem; letter-spacing: .1px; }
   .sec-head h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 800; margin-top: 4px; }
   .sec-head p { color: var(--ink-soft); margin-top: 6px; max-width: 640px; }
 
@@ -127,7 +127,7 @@
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     box-shadow: var(--shadow); overflow: hidden;
   }
-  .day-top { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; border-left: 5px solid var(--sun); }
+  .day-top { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; }
   .day-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.6rem; color: var(--sun-deep); min-width: 58px; line-height: 1; }
   .day-num small { display: block; font-size: .6rem; letter-spacing: 1px; color: var(--ink-soft); font-family: 'Work Sans'; font-weight: 600; margin-top: 3px; }
   .day-titlewrap { flex: 1; }
@@ -301,8 +301,101 @@
   footer .f-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
   footer p { opacity: .7; font-size: .84rem; margin-top: 8px; }
 
-  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1); }
   .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- DAY NUMBER ACCENT (replaces the old side-stripe) ---------- */
+  .day-num { position: relative; padding-left: 13px; }
+  .day-num::before { content: ""; position: absolute; left: 0; top: 2px; bottom: 8px; width: 4px; border-radius: 999px;
+    background: linear-gradient(180deg, var(--sun), var(--sun-deep)); }
+
+  /* ---------- A11Y: focus rings ---------- */
+  a:focus-visible, button:focus-visible, .pick-item:focus-within, [tabindex]:focus-visible,
+  .plan-tab:focus-visible, .check-item:focus-within {
+    outline: 2.5px solid var(--sun-deep); outline-offset: 2px; border-radius: 8px;
+  }
+  .theme-btn:focus-visible { outline-offset: 3px; }
+
+  /* ---------- 大图鉴赏 trigger ---------- */
+  .shot-btn { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; font-family: inherit;
+    text-decoration: none; font-size: .76rem; font-weight: 700; color: var(--ink);
+    background: var(--line); border: none; padding: 6px 11px; border-radius: 999px;
+    transition: transform .2s cubic-bezier(.22,1,.36,1), box-shadow .2s, background .2s; }
+  .shot-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); background: color-mix(in srgb, var(--amber) 30%, var(--card)); }
+  .shot-btn .cnt { font-weight: 800; color: var(--sun-deep); }
+  .shot-btn.has-real { background: color-mix(in srgb, var(--amber) 26%, var(--card)); color: var(--sun-deep); }
+
+  /* card thumbnail strip (when real images exist) */
+  .card-shots { display: flex; gap: 6px; margin: 10px 0 2px; }
+  .card-shots img { width: 100%; height: 88px; object-fit: cover; border-radius: 10px; cursor: pointer;
+    flex: 1; background: var(--line); transition: filter .2s, transform .2s cubic-bezier(.22,1,.36,1); }
+  .card-shots img:hover { filter: brightness(1.04) saturate(1.05); transform: translateY(-1px); }
+  .card-shots.n1 img { height: 150px; }
+
+  /* ---------- LIGHTBOX (大图鉴赏) ---------- */
+  dialog.lightbox { padding: 0; border: none; background: transparent; max-width: 100vw; max-height: 100vh;
+    width: 100%; height: 100%; overflow: visible; color: #fff8ef; }
+  dialog.lightbox::backdrop { background: rgba(18,11,5,.93); backdrop-filter: blur(8px);
+    animation: lbFade .35s ease; }
+  dialog.lightbox[open] { display: grid; grid-template-rows: 1fr auto; }
+  .lb-stage { position: relative; display: grid; place-items: center; padding: 56px 16px 8px; min-height: 0;
+    touch-action: pan-y; }
+  .lb-figure { position: relative; display: grid; place-items: center; max-width: min(1100px, 94vw); }
+  .lb-img { max-width: 100%; max-height: 74vh; border-radius: 14px; box-shadow: 0 30px 80px -20px rgba(0,0,0,.7);
+    background: #211a13; animation: lbPop .4s cubic-bezier(.22,1,.36,1); }
+  .lb-img.swapping { animation: lbCross .35s ease; }
+  .lb-counter { position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+    font-size: .82rem; font-weight: 700; letter-spacing: .5px; background: rgba(0,0,0,.4);
+    padding: 6px 14px; border-radius: 999px; backdrop-filter: blur(4px); }
+  .lb-close { position: absolute; top: 14px; right: 16px; width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.3); background: rgba(0,0,0,.35); color: #fff8ef; font-size: 1.3rem;
+    cursor: pointer; display: grid; place-items: center; transition: transform .2s, background .2s; backdrop-filter: blur(4px); }
+  .lb-close:hover { background: rgba(0,0,0,.6); transform: rotate(90deg); }
+  .lb-nav { position: absolute; top: 50%; transform: translateY(-50%); width: 52px; height: 52px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.28); background: rgba(0,0,0,.35); color: #fff8ef; font-size: 1.5rem;
+    cursor: pointer; display: grid; place-items: center; transition: transform .2s cubic-bezier(.22,1,.36,1), background .2s;
+    backdrop-filter: blur(4px); z-index: 2; }
+  .lb-nav:hover { background: rgba(0,0,0,.62); }
+  .lb-prev { left: max(10px, calc(50vw - 580px)); } .lb-prev:hover { transform: translateY(-50%) translateX(-3px); }
+  .lb-next { right: max(10px, calc(50vw - 580px)); } .lb-next:hover { transform: translateY(-50%) translateX(3px); }
+  .lb-nav[hidden] { display: none; }
+  .lb-info { max-width: min(1100px, 94vw); margin: 0 auto; padding: 16px 18px 26px; display: flex;
+    align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .lb-cap { flex: 1; min-width: 200px; }
+  .lb-cap h3 { font-family: 'Playfair Display','Noto Sans SC',serif; font-size: 1.35rem; font-weight: 700; line-height: 1.2; }
+  .lb-cap .lb-en { font-size: .85rem; opacity: .8; margin-top: 2px; }
+  .lb-cap .lb-desc { font-size: .86rem; opacity: .9; margin-top: 8px; max-width: 60ch; line-height: 1.55; }
+  .lb-src { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; font-size: .84rem;
+    font-weight: 700; color: #fff; background: var(--xhs-red, #ff2e51); padding: 10px 16px; border-radius: 999px;
+    white-space: nowrap; transition: transform .2s cubic-bezier(.22,1,.36,1), box-shadow .2s; }
+  .lb-src:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -6px rgba(255,46,81,.6); }
+  .lb-src small { display: block; font-weight: 500; opacity: .85; font-size: .72rem; }
+  .lb-src.placeholder { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.32); }
+  .lb-dots { display: flex; gap: 7px; justify-content: center; padding: 0 0 8px; flex-wrap: wrap; }
+  .lb-dots button { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0; cursor: pointer;
+    background: rgba(255,255,255,.35); transition: background .2s, transform .2s; }
+  .lb-dots button.on { background: var(--amber); transform: scale(1.3); }
+  /* placeholder slide (no real image yet) */
+  .lb-ph { width: min(680px, 90vw); aspect-ratio: 4/3; border-radius: 14px; display: grid; place-items: center;
+    text-align: center; padding: 30px; box-shadow: 0 30px 80px -20px rgba(0,0,0,.7);
+    background: linear-gradient(150deg, var(--ph-a, #ff9a52), var(--ph-b, #f2660a)); color: #fff8ef; }
+  .lb-ph .ph-ic { font-size: 3.4rem; } .lb-ph .ph-t { font-family: 'Playfair Display',serif; font-size: 1.5rem; font-weight: 700; margin-top: 10px; }
+  .lb-ph .ph-s { font-size: .85rem; opacity: .9; margin-top: 8px; max-width: 36ch; }
+
+  @keyframes lbFade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes lbPop { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+  @keyframes lbCross { from { opacity: .3; } to { opacity: 1; } }
+
+  /* ---------- REDUCED MOTION ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important; }
+    .reveal { opacity: 1; transform: none; }
+    .day.flash > .day-card { animation: none; }
+    .lb-img, .lb-img.swapping { animation: none; }
+    .lb-close:hover, .lb-nav:hover, .shot-btn:hover, .card:hover, .plan-tab:hover { transform: none; }
+  }
 
   @media (max-width: 560px) {
     .nav-links { display: none; }
@@ -535,6 +628,16 @@
     <p style="margin-top:4px">行程基于日历预订自动生成 · 景点/餐厅信息会随季节变动，出行前请再次确认营业时间与票务。</p>
   </div>
 </footer>
+
+<!-- LIGHTBOX · 大图鉴赏 -->
+<dialog class="lightbox" id="lightbox" aria-label="大图鉴赏 Image viewer">
+  <button class="lb-close" id="lbClose" aria-label="关闭 Close" type="button">✕</button>
+  <div class="lb-stage" id="lbStage"></div>
+  <div>
+    <div class="lb-dots" id="lbDots"></div>
+    <div class="lb-info" id="lbInfo"></div>
+  </div>
+</dialog>
 
 <script>
 /* ============ DATA ============ */
@@ -879,6 +982,99 @@ function xhsFor(area, isFood){
   return XHS.la;
 }
 
+/* ============ 小红书 大图鉴赏 GALLERY ============ */
+/* Real posts scraped from 小红书 — direct note URLs render without login, so each
+   spot below links to its genuine original post, and images are localized to /images
+   (downloaded with a Referer header to bypass CDN hotlink protection). To add more:
+   paste a note share-link, I scrape its images and drop them in here. */
+const XHS_NOTES = {
+  sdGuide: {
+    url: "https://www.xiaohongshu.com/explore/688450210000000013011c12?xsec_token=ABrGqVKc5lJyfVzWjKd_52TCnBuxpYilT3InqP9hi72DE=&xsec_source=pc_search",
+    title: "圣地亚哥｜懒人也能轻松拿捏的旅游攻略", author: "Future Holiday", stat: "❤️ 328 · ⭐ 591"
+  }
+};
+/* spot.en  ->  { note, imgs[] } */
+const GALLERY = {
+  "Balboa Park":                { note:"sdGuide", imgs:["images/xhs/sd-guide/06.webp"] },
+  "La Jolla Cove":              { note:"sdGuide", imgs:["images/xhs/sd-guide/08.webp"] },
+  "Sunset Cliffs Natural Park": { note:"sdGuide", imgs:["images/xhs/sd-guide/09.webp"] },
+  "USS Midway Museum":          { note:"sdGuide", imgs:["images/xhs/sd-guide/11.webp"] }
+};
+const SPOT_BY_EN = {}; SPOTS.forEach(s => { SPOT_BY_EN[s.en] = s; });
+function spotGallery(en){ const g = GALLERY[en]; return (g && g.imgs && g.imgs.length) ? g : null; }
+function noteUrlFor(en){ const g = GALLERY[en]; return (g && XHS_NOTES[g.note]) ? XHS_NOTES[g.note].url : null; }
+function phColors(seed){ let h=0; for(let i=0;i<seed.length;i++) h=(h*31+seed.charCodeAt(i))%360;
+  const hue = 18 + (h % 46); return [`hsl(${hue} 86% 62%)`, `hsl(${(hue+348)%360} 88% 45%)`]; }
+
+/* ---- LIGHTBOX ---- */
+const _lb = { items:[], idx:0, spot:null, note:null, search:'' };
+function openLightbox(en){
+  const spot = SPOT_BY_EN[en]; if(!spot) return;
+  const g = spotGallery(en);
+  _lb.spot = spot;
+  _lb.items = g ? g.imgs.map(src => ({src, real:true})) : [{real:false}];
+  _lb.idx = 0;
+  _lb.note = (g && XHS_NOTES[g.note]) || null;
+  _lb.search = xhsFor(spot.area);
+  renderLightbox();
+  const dlg = document.getElementById('lightbox');
+  if(!dlg.open) dlg.showModal();
+}
+function renderLightbox(){
+  const it = _lb.items[_lb.idx], spot = _lb.spot, multi = _lb.items.length > 1;
+  const stage = document.getElementById('lbStage');
+  if(it.real){
+    stage.innerHTML =
+      `<button class="lb-nav lb-prev" aria-label="上一张 Previous"${multi?'':' hidden'}>‹</button>
+       <div class="lb-figure"><img class="lb-img" src="${it.src}" alt="${spot.nm} — 小红书大图"></div>
+       <button class="lb-nav lb-next" aria-label="下一张 Next"${multi?'':' hidden'}>›</button>
+       <div class="lb-counter">${_lb.idx+1} / ${_lb.items.length}</div>`;
+  } else {
+    const [a,b] = phColors(spot.en || spot.nm);
+    stage.innerHTML =
+      `<div class="lb-ph" style="--ph-a:${a};--ph-b:${b}"><div>
+         <div class="ph-ic">${spot.heat==='gem'?'💎':'📸'}</div>
+         <div class="ph-t">${spot.nm}</div>
+         <div class="ph-s">这个景点的小红书大图还没收录。把原帖链接发我，我帮你扒图收进来 ✨</div>
+       </div></div>
+       <div class="lb-counter">大图鉴赏 · 待收录</div>`;
+  }
+  const info = document.getElementById('lbInfo');
+  const src = _lb.note
+    ? `<a class="lb-src" target="_blank" rel="noopener" href="${_lb.note.url}">📕 看原帖 Original post
+         <small>${_lb.note.title} · ${_lb.note.author} · ${_lb.note.stat}</small></a>`
+    : `<a class="lb-src placeholder" target="_blank" rel="noopener" href="${_lb.search}">📕 看小红书攻略 RED guide</a>`;
+  info.innerHTML =
+    `<div class="lb-cap"><h3>${spot.nm}</h3><div class="lb-en">${spot.en||''}</div>
+       ${spot.body?`<div class="lb-desc">${spot.body}</div>`:''}</div>${src}`;
+  const dots = document.getElementById('lbDots');
+  dots.innerHTML = multi
+    ? _lb.items.map((_,i)=>`<button class="${i===_lb.idx?'on':''}" data-i="${i}" aria-label="第 ${i+1} 张"></button>`).join('')
+    : '';
+  stage.querySelector('.lb-prev')?.addEventListener('click', ()=>lbGo(-1));
+  stage.querySelector('.lb-next')?.addEventListener('click', ()=>lbGo(1));
+  dots.querySelectorAll('button').forEach(b => b.onclick = ()=>{ _lb.idx = +b.dataset.i; renderLightbox(); });
+}
+function lbGo(d){ const n=_lb.items.length; if(n<2) return; _lb.idx=(_lb.idx+d+n)%n; renderLightbox(); }
+function initLightbox(){
+  const dlg = document.getElementById('lightbox');
+  document.getElementById('lbClose').onclick = ()=>dlg.close();
+  dlg.addEventListener('click', e => { if(e.target===dlg || e.target.id==='lbStage') dlg.close(); });
+  document.addEventListener('keydown', e => {
+    if(!dlg.open) return;
+    if(e.key==='ArrowLeft')  lbGo(-1);
+    if(e.key==='ArrowRight') lbGo(1);
+  });
+  let x0=null;
+  dlg.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive:true});
+  dlg.addEventListener('touchend', e => {
+    if(x0==null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 45) lbGo(dx < 0 ? 1 : -1);
+    x0 = null;
+  });
+}
+
 const ZONE = {
   drive:   {c:"#64748b", label:"🚗 自驾 / 超充"},
   anaheim: {c:"#f59e0b", label:"🎢 安纳海姆 / OC"},
@@ -1016,14 +1212,21 @@ function cityOfArea(a){
   return 'LA';
 }
 function spotCard(s){
+  const g = spotGallery(s.en);
+  const realNote = noteUrlFor(s.en);
+  const thumbs = g ? `<div class="card-shots n${Math.min(g.imgs.length,3)}">${
+      g.imgs.slice(0,3).map(src=>`<img src="${src}" loading="lazy" decoding="async" alt="${s.nm} 小红书大图" data-en="${s.en}">`).join('')
+    }</div>` : '';
   return `<div class="card">
       <span class="heat ${s.heat}">${s.heat==='hot'?'🔥 爆款':'⭐ 小众'}</span>
       <h4>${s.nm}</h4><div class="c-en">${s.en}</div>
       <div class="c-area">📍 ${s.area}</div>
       <div class="c-body">${s.body}</div>
+      ${thumbs}
       <div class="card-actions">
         <a class="nav-btn" target="_blank" rel="noopener" href="${gmap(s.en + ' ' + s.area)}">🧭 导航</a>
-        <a class="xhs-link" target="_blank" rel="noopener" href="${xhsSearch(s.nm)}">📕 小红书</a>
+        <button class="shot-btn ${g?'has-real':''}" data-en="${s.en}" type="button">🖼️ 大图鉴赏${g?` <span class="cnt">${g.imgs.length}</span>`:''}</button>
+        <a class="xhs-link" target="_blank" rel="noopener" href="${realNote || xhsFor(s.area)}">📕 ${realNote?'原帖':'小红书'}</a>
       </div>
     </div>`;
 }
@@ -1036,6 +1239,8 @@ function renderSpots(){
       <h3 class="city-h">${CITY_LABEL[c]} <span>· ${groups[c].length} 个打卡点</span></h3>
       <div class="grid">${groups[c].map(spotCard).join('')}</div>
     </div>`:'').join('');
+  box.querySelectorAll('[data-en]').forEach(el =>
+    el.addEventListener('click', () => openLightbox(el.dataset.en)));
 }
 
 function renderFood(){
@@ -1241,7 +1446,7 @@ function initReveal(){
 /* init */
 renderPlanTabs(); renderTimeline(); renderSpots(); renderFood(); renderCafes(); renderCharging(); renderInfo(); renderPack(); renderPlanner();
 document.getElementById('planGo').onclick = generatePlan;
-initTheme(); initReveal(); initMap(); tick(); setInterval(tick,1000);
+initTheme(); initReveal(); initMap(); initLightbox(); tick(); setInterval(tick,1000);
 </script>
 </body>
 </html>

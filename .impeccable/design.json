@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-24T00:00:00Z",
+  "title": "Design System: SoCal Family Road Trip 2026",
+  "extensions": {
+    "colorMeta": {
+      "sun": { "role": "primary", "displayName": "Coast Sunset Orange", "canonical": "#ff8c42", "tonalRamp": ["#2a1505", "#5c2f08", "#8a470c", "#b85d10", "#e0710f", "#ff8c42", "#ffab73", "#ffd9bf"] },
+      "sun-deep": { "role": "primary", "displayName": "Deep Sunset", "canonical": "#f2660a", "tonalRamp": ["#2a1203", "#552406", "#80370a", "#aa490d", "#d55b0f", "#f2660a", "#ff9249", "#ffc6a1"] },
+      "amber": { "role": "primary", "displayName": "Golden Amber", "canonical": "#f6b13c", "tonalRamp": ["#2e2008", "#5c400f", "#8a6017", "#b8801f", "#e6a02e", "#f6b13c", "#fac877", "#fde3b8"] },
+      "leaf": { "role": "secondary", "displayName": "Eucalyptus Green", "canonical": "#4c9a6b", "tonalRamp": ["#0e1f15", "#173524", "#234f37", "#2f6949", "#3c845c", "#4c9a6b", "#7bb992", "#b3d9c2"] },
+      "leaf-deep": { "role": "secondary", "displayName": "Deep Eucalyptus", "canonical": "#2f7350", "tonalRamp": ["#0a1810", "#112a1d", "#1a3f2c", "#23543a", "#296449", "#2f7350", "#5a9a76", "#9ec7ae"] },
+      "xhs-red": { "role": "tertiary", "displayName": "小红书 Red", "canonical": "#ff2e51", "tonalRamp": ["#2e0710", "#5c0d1f", "#8a142e", "#b81a3e", "#e0234d", "#ff2e51", "#ff6f86", "#ffb3c0"] },
+      "ink": { "role": "neutral", "displayName": "Warm Ink", "canonical": "#2a2018", "tonalRamp": ["#17110c", "#2a2018", "#473828", "#6b5d50", "#9a8a78", "#c4b6a4", "#e3d9cb", "#fff8ef"] },
+      "ink-soft": { "role": "neutral", "displayName": "Soft Ink", "canonical": "#6b5d50", "tonalRamp": ["#2a2018", "#473828", "#6b5d50", "#8a7c6c", "#a99c8c", "#c9bdad", "#e3d9cb", "#fff8ef"] },
+      "paper": { "role": "neutral", "displayName": "Coastal Paper", "canonical": "#fff8ef", "tonalRamp": ["#17120d", "#211a13", "#34291d", "#6b5d50", "#a99c8c", "#efe3d2", "#fff8ef", "#ffffff"] },
+      "line": { "role": "neutral", "displayName": "Sand Line", "canonical": "#efe3d2", "tonalRamp": ["#34291d", "#5c4a35", "#8a7256", "#b89a78", "#d4c2a8", "#efe3d2", "#f7eee0", "#fffaf2"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero headline only; Playfair 900 with italic English scriptline." },
+      "headline": { "displayName": "Headline", "purpose": "Section titles (h2)." },
+      "title": { "displayName": "Title", "purpose": "Day titles and card headings." },
+      "body": { "displayName": "Body", "purpose": "Notes, descriptions, lists. Cap measure 65–75ch." },
+      "label": { "displayName": "Label", "purpose": "Kickers, badges, meta tags — used sparingly, not on every section." }
+    },
+    "shadows": [
+      { "name": "resting", "value": "0 10px 30px -12px rgba(120, 72, 20, .28)", "purpose": "Default card lift on warm paper." },
+      { "name": "lifted", "value": "0 24px 60px -20px rgba(120, 72, 20, .38)", "purpose": "Hover, featured, and modal surfaces." },
+      { "name": "resting-dark", "value": "0 10px 30px -12px rgba(0,0,0,.6)", "purpose": "Dark-theme card lift." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Ease-out-quint for lifts, reveals, lightbox entrance." },
+      { "name": "theme-fade", "value": "background .4s ease, color .4s ease", "purpose": "Light/dark theme crossfade." },
+      { "name": "reveal", "value": "opacity .6s ease, transform .6s ease", "purpose": "Scroll-reveal of sections (enhances an already-visible default)." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "560px" },
+      { "name": "content-max", "value": "1080px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Navigate Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Primary action pill — 'navigate to this place'. Eucalyptus gradient.",
+      "html": "<a class=\"ds-nav-btn\" href=\"#\">🧭 导航 Navigate</a>",
+      "css": ".ds-nav-btn { display: inline-flex; align-items: center; gap: 5px; text-decoration: none; font-size: .76rem; font-weight: 700; color: #fff; background: linear-gradient(135deg, #2f7350, #4c9a6b); padding: 6px 11px; border-radius: 999px; transition: transform .2s cubic-bezier(0.22,1,0.36,1), box-shadow .2s; } .ds-nav-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px -6px rgba(47,115,80,.6); } .ds-nav-btn:focus-visible { outline: 2px solid #2f7350; outline-offset: 2px; }"
+    },
+    {
+      "name": "小红书 Source Link",
+      "kind": "button",
+      "refersTo": "xhs-link",
+      "description": "Tertiary red pill — opens a real 小红书 reference. Red means 'open a source'.",
+      "html": "<a class=\"ds-xhs\" href=\"#\">📕 小红书</a>",
+      "css": ".ds-xhs { display: inline-flex; align-items: center; gap: 5px; text-decoration: none; font-size: .76rem; font-weight: 700; color: #fff; background: #ff2e51; padding: 6px 11px; border-radius: 999px; transition: transform .2s cubic-bezier(0.22,1,0.36,1), box-shadow .2s; } .ds-xhs:hover { transform: translateY(-2px); box-shadow: 0 6px 16px -6px rgba(255,46,81,.6); } .ds-xhs:focus-visible { outline: 2px solid #d11e3f; outline-offset: 2px; }"
+    },
+    {
+      "name": "Content Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Spot/food/café card. White on warm paper, lifts on hover with a warm shadow.",
+      "html": "<div class=\"ds-card\"><span class=\"ds-heat\">🔥 爆款</span><h4>格里菲斯天文台</h4><div class=\"ds-en\">Griffith Observatory</div><div class=\"ds-area\">📍 Los Angeles</div><p class=\"ds-body\">免费入场，日落 + 夜景 + 免费公众望远镜观星。</p></div>",
+      "css": ".ds-card { background: #fff; border: 1px solid #efe3d2; border-radius: 16px; padding: 16px 17px; box-shadow: 0 10px 30px -12px rgba(120,72,20,.28); transition: transform .25s cubic-bezier(0.22,1,0.36,1), box-shadow .25s; display: flex; flex-direction: column; } .ds-card:hover { transform: translateY(-4px); box-shadow: 0 24px 60px -20px rgba(120,72,20,.38); } .ds-heat { font-size: .7rem; font-weight: 700; padding: 3px 9px; border-radius: 999px; align-self: flex-start; background: #ffe3d1; color: #e0440a; } .ds-card h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; margin: 9px 0 2px; color: #2a2018; } .ds-en { font-size: .78rem; color: #6b5d50; } .ds-area { font-size: .74rem; color: #f2660a; font-weight: 600; margin-top: 6px; } .ds-body { font-size: .85rem; color: #5c4a39; margin-top: 8px; line-height: 1.55; }"
+    },
+    {
+      "name": "Plan Tab",
+      "kind": "chip",
+      "refersTo": "card",
+      "description": "Large selectable tab for choosing itinerary plan A/B/C; orange-tinted when active.",
+      "html": "<div class=\"ds-plan-tab ds-active\"><div class=\"ds-pt-name\">Plan A · 轻松 Chill 亲子版</div><div class=\"ds-pt-en\">Relaxed &amp; Kid-First</div></div>",
+      "css": ".ds-plan-tab { text-align: left; cursor: pointer; border: 1.5px solid #efe3d2; background: #fff; border-radius: 20px; padding: 16px 18px; transition: transform .25s cubic-bezier(0.22,1,0.36,1), box-shadow .25s; } .ds-plan-tab:hover { transform: translateY(-3px); box-shadow: 0 10px 30px -12px rgba(120,72,20,.28); } .ds-plan-tab.ds-active { border-color: #ff8c42; box-shadow: 0 10px 30px -12px rgba(120,72,20,.28); background: linear-gradient(165deg, #fff1e4, #fff); } .ds-pt-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.15rem; color: #2a2018; } .ds-pt-en { font-size: .78rem; color: #6b5d50; }"
+    },
+    {
+      "name": "Meta Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Small tag for cuisine / area / price metadata.",
+      "html": "<span class=\"ds-chip\">百年市场</span><span class=\"ds-chip ds-price\">人均 $18</span>",
+      "css": ".ds-chip { font-size: .72rem; background: #efe3d2; color: #5c4a39; padding: 3px 9px; border-radius: 999px; font-weight: 600; } .ds-chip.ds-price { background: #fbe7c4; color: #c4520a; }"
+    },
+    {
+      "name": "Sticky Nav",
+      "kind": "nav",
+      "refersTo": "button-primary",
+      "description": "Translucent sticky top bar with backdrop blur and pill links.",
+      "html": "<nav class=\"ds-nav\"><span class=\"ds-brand\">SoCal·2026</span><a class=\"ds-navlink\" href=\"#\">行程 Itinerary</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 16px; height: 60px; padding: 0 22px; background: rgba(255,248,239,.86); backdrop-filter: blur(12px); border-bottom: 1px solid #efe3d2; } .ds-brand { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.1rem; color: #2a2018; } .ds-navlink { color: #6b5d50; text-decoration: none; font-size: .82rem; font-weight: 600; padding: 7px 11px; border-radius: 999px; transition: .2s; } .ds-navlink:hover { background: #efe3d2; color: #2a2018; } .ds-navlink:focus-visible { outline: 2px solid #f2660a; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Golden-Hour Roadbook",
+    "overview": "A keepsake travel journal lit by California's late-afternoon sun, not a booking portal and not a feed. It carries an editorial spine — a serif display voice, generous column rhythm, considered color — wrapped around genuinely useful trip logistics. The whole surface rides a committed warm-neutral paper with a single sunset gradient; green is the orange's counterweight for 'go' actions, and 小红书 red is strictly scoped to mean 'open a real source.'",
+    "keyCharacteristics": [
+      "Warm paper surface + a single sunset gradient as the signature, not a flat white app shell.",
+      "Serif display (Playfair) against humanist sans (Work Sans) — real contrast, one bilingual voice.",
+      "Green = action/confirm, orange = identity/warmth, 小红书 red = open a real source.",
+      "Glanceable first: collapsible day cards, an image lightbox, lazy-loaded detail.",
+      "Dual-theme, built for bright sun and night-driving alike."
+    ],
+    "rules": [
+      { "name": "The One-Job-Per-Color Rule", "body": "Green means action/confirm. Red means 'open a real source.' Orange means identity and warmth. A color never borrows another's job.", "section": "colors" },
+      { "name": "The Reading-Floor Rule", "body": "Body and meta text must clear 4.5:1 against their actual background in both themes; --ink-soft on paper is the one to verify constantly. Light gray 'for elegance' is forbidden.", "section": "colors" },
+      { "name": "The Bilingual Pair Rule", "body": "Every place name appears as 中文 (primary weight) + English (lighter subtitle) as one unit — never one language alone, never two competing at equal weight.", "section": "typography" },
+      { "name": "The One-Kicker Rule", "body": "The uppercase tracked label is a deliberate accent, not section scaffolding. Do not stamp an eyebrow above every section.", "section": "typography" },
+      { "name": "The Warm-Shadow Rule", "body": "Shadows are tinted with the paper's own brown hue, never neutral gray/black. A gray shadow on warm paper is the tell of a generic UI kit.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep the warm paper (#fff8ef) + single sunset gradient as the signature surface.",
+      "Do tint every shadow with the brown paper hue (the Warm-Shadow Rule).",
+      "Do keep green for action/confirm, red for 'open a real source,' orange for identity.",
+      "Do pair every place name 中文 + English as one unit (the Bilingual Pair Rule).",
+      "Do verify --ink-soft body text clears 4.5:1 in both themes (the Reading-Floor Rule).",
+      "Do add visible :focus-visible rings and respect prefers-reduced-motion."
+    ],
+    "donts": [
+      "Don't let it read as a generic travel-agency template — no stock heroes, no 'deals' framing, no corporate blue.",
+      "Don't let it become a cluttered 小红书 screenshot-collage — emoji are accents, not layout.",
+      "Don't drift toward a cold SaaS dashboard — no sterile gray-on-white chrome.",
+      "Don't use a border-left/border-right greater than 1px as a colored accent stripe.",
+      "Don't stamp an uppercase tracked eyebrow above every section (the One-Kicker Rule).",
+      "Don't use gradient text, glassmorphism as default, or gray shadows on the warm surface."
+    ]
+  }
+}
