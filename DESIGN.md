@@ -14,6 +14,14 @@ colors:
   line: "#efe3d2"
   xhs-red: "#ff2e51"
   xhs-red-deep: "#d11e3f"
+  # Golden-hour sky (Three.js atmosphere gradient stops — extensions of the sunset identity)
+  sky-hi: "#ffd28a"
+  sky-mid: "#ff9e4d"
+  sky-low: "#b8430a"
+  # Night-drive sky (dark-theme atmosphere stops)
+  night-hi: "#3a2a4d"
+  night-mid: "#2a1d33"
+  night-low: "#0d0a07"
 typography:
   display:
     fontFamily: "Playfair Display, 'Noto Sans SC', Georgia, serif"
@@ -41,11 +49,18 @@ typography:
     fontSize: "0.76rem"
     fontWeight: 700
     letterSpacing: "2px"
+  mono:
+    fontFamily: "'Spline Sans Mono', 'Noto Sans SC', ui-monospace, monospace"
+    fontSize: "0.8rem"
+    fontWeight: 500
+    letterSpacing: "-0.01em"
+    note: "Telemetry layer — clock times, mileage, coordinates, prices, charge stats, romanized English subtitles. The trip's co-driver logbook voice; never long-form prose."
 rounded:
   sm: "6px"
   md: "12px"
   lg: "16px"
   xl: "20px"
+  page: "26px"
   pill: "999px"
 spacing:
   xs: "6px"
@@ -273,3 +288,34 @@ reduced-motion crossfade fallback.
 - **Don't** stamp an uppercase tracked eyebrow above every section (the One-Kicker Rule).
 - **Don't** use gradient text (`background-clip: text`), glassmorphism as default decoration,
   or gray shadows on the warm surface.
+
+## 7. Motion & Atmosphere — "The Roadbook over a Living Horizon"
+
+The site rides on a cinematic layer that deepens the golden-hour identity without
+compromising legibility. Three commitments:
+
+- **Living sky (Three.js).** A fixed full-viewport WebGL `ShaderMaterial` renders the
+  golden-hour atmosphere — fbm-noise texture + film grain + a sun glow that follows the
+  pointer (lerped). It is the brand's hero "imagery" (a credible WebGL scene, not a stock
+  photo — honoring the no-stock-hero anti-reference). Theme-aware (`sky-*` light /
+  `night-*` dark). It **pauses** on hidden tab and renders a single static frame under
+  `prefers-reduced-motion`. The CSS `--sky` gradient is the no-WebGL fallback.
+- **Roadbook pages.** Content sections are centered max-width paper "pages" that float
+  over the fixed sky (the atmosphere shows in the desktop gutters and the gaps between
+  pages). **Body text never sits on the live sky** — only the hero and the two full-bleed
+  `.scene` chapter bands place cream type over it, always behind a contrast scrim.
+- **Choreography (GSAP ScrollTrigger + Lenis).** Lenis drives smooth scroll; each section
+  earns a *tailored* entrance (headline clip-reveals, batched card staggers, pinned scene
+  captions, a fixed scroll odometer) — never one uniform fade on everything. Reveals
+  **enhance an already-visible default**: the from-state is set by JS at runtime, so if
+  scripts fail or motion is reduced, nothing is hidden. Every effect has a
+  `prefers-reduced-motion` path (Lenis off → native scroll; entrances skipped).
+
+### The Telemetry Rule (monospace)
+
+Monospace (`Spline Sans Mono`) is **not** decorative "tech" costume — it is the trip's
+data voice. It carries only the *logbook layer*: clock times, mileage, coordinates, prices,
+charge-stall counts, countdown digits (tabular, so they don't jitter), and romanized
+English subtitles beneath their 中文 names. Prose, headlines, and display stay
+Playfair / Work Sans. If a string isn't a number, a time, a measurement, or a romanization,
+it does not get mono.

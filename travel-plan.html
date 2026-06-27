@@ -7,7 +7,7 @@
 <meta name="description" content="圣克拉拉 → 迪士尼 → 洛杉矶 → 圣地亚哥 · 8天7晚亲子自驾攻略" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Work+Sans:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500&family=Work+Sans:wght@300;400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
@@ -26,6 +26,14 @@
     --shadow-lg: 0 24px 60px -20px rgba(120, 72, 20, .38);
     --radius: 20px;
     --maxw: 1080px;
+    --sheet: 1200px;                 /* roadbook "page" width — canvas shows in the gutters */
+    --mono: 'Spline Sans Mono', 'Noto Sans SC', ui-monospace, monospace;
+    /* the golden-hour sky behind the pages — also the no-WebGL fallback */
+    --sky: radial-gradient(120% 80% at 78% 8%, #ffd28a 0%, #ff9e4d 30%, #f2660a 62%, #b8430a 100%);
+    --page-shadow: 0 30px 70px -34px rgba(120, 60, 12, .55);
+    /* semantic z-index scale */
+    --z-bg: 0; --z-page: 2; --z-scene: 3; --z-sticky: 40; --z-nav: 60;
+    --z-backdrop: 80; --z-sheet: 85; --z-modal: 100;
   }
   :root[data-theme="dark"] {
     --ink: #f3e9db;
@@ -38,15 +46,29 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
+  /* Lenis owns the scroll; disable native smooth + give it room */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: clip; }
   body {
     font-family: 'Work Sans', 'Noto Sans SC', system-ui, sans-serif;
-    background: var(--paper);
+    /* the WebGL sky lives behind everything; this gradient is the no-WebGL fallback */
+    background: var(--sky) fixed;
     color: var(--ink);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-    transition: background .4s ease, color .4s ease;
+    transition: color .4s ease;
   }
+  :root[data-theme="dark"] body { --sky: radial-gradient(120% 80% at 78% 8%, #3a2a4d 0%, #2a1d33 34%, #1a1410 66%, #0d0a07 100%); }
+  /* fixed WebGL atmosphere canvas */
+  #bg-canvas { position: fixed; inset: 0; width: 100vw; height: 100dvh; z-index: var(--z-bg);
+    display: block; pointer-events: none; }
+  /* a faint fixed grain veil ties the whole surface to the "textured" sky */
+  .grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .05; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  :root[data-theme="dark"] .grain { mix-blend-mode: screen; opacity: .04; }
   h1, h2, h3, .serif { font-family: 'Playfair Display', 'Noto Sans SC', serif; }
   .en { font-family: 'Work Sans', sans-serif; color: var(--ink-soft); font-weight: 400; }
   a { color: var(--sun-deep); }
@@ -108,39 +130,70 @@
   .nav-item .active-dot { margin-left: auto; width: 7px; height: 7px; border-radius: 50%; background: var(--sun); opacity: 0; flex: none; }
   .nav-item.active .active-dot { opacity: 1; }
 
-  /* ---------- HERO ---------- */
+  /* ---------- HERO (transparent scene over the WebGL sky) ---------- */
   .hero {
-    position: relative; padding: 70px 0 60px;
-    background:
-      radial-gradient(120% 90% at 80% -10%, rgba(246,177,60,.45), transparent 55%),
-      radial-gradient(120% 100% at 0% 0%, rgba(76,154,107,.30), transparent 50%),
-      linear-gradient(160deg, #ffb15c 0%, #ff8c42 38%, #f2660a 100%);
-    color: #fff8ef; overflow: hidden;
+    position: relative; min-height: 100svh; display: grid; align-content: center;
+    padding: clamp(96px,15vh,170px) 0 clamp(60px,10vh,120px);
+    color: #fff8ef; overflow: hidden; isolation: isolate;
   }
   :root[data-theme="dark"] .hero { color: #fff3e2; }
+  .hero > .wrap { position: relative; z-index: 3; }
+  /* contrast scrim: a cinematic left-column wash (behind the left-aligned text) +
+     bottom anchor, so cream text clears the bright pointer-driven sun-glow anywhere. */
   .hero::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(60% 50% at 50% 120%, rgba(0,0,0,.25), transparent);
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background:
+      linear-gradient(93deg, rgba(20,11,2,.62) 0%, rgba(20,11,2,.34) 40%, transparent 72%),
+      radial-gradient(80% 55% at 50% 122%, rgba(30,15,3,.5), transparent 72%),
+      linear-gradient(184deg, rgba(20,12,4,.3) 0%, transparent 24%, transparent 70%, rgba(20,12,4,.36) 100%);
   }
-  .palm { position: absolute; font-size: 7rem; opacity: .16; user-select: none; }
-  .palm.p1 { top: 8px; right: 24px; transform: rotate(8deg); }
-  .palm.p2 { bottom: -18px; left: 8px; font-size: 5rem; transform: rotate(-12deg); }
-  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: .8rem; letter-spacing: 2px; text-transform: uppercase; background: rgba(255,255,255,.18); padding: 6px 14px; border-radius: 999px; backdrop-filter: blur(4px); }
+  @media (max-width: 720px) {
+    /* narrow: text spans full width → use a vertical wash instead of a left one */
+    .hero::after { background:
+      linear-gradient(186deg, rgba(20,11,2,.5) 0%, rgba(20,11,2,.26) 34%, rgba(20,11,2,.32) 64%, rgba(20,11,2,.56) 100%); }
+  }
+  /* oversized serif watermark behind the headline — grid + z-index depth */
+  .hero-mark { position: absolute; inset: 0; z-index: 2; display: grid; place-items: center; pointer-events: none;
+    font-family: 'Playfair Display', serif; font-weight: 900; font-style: italic;
+    font-size: clamp(7rem, 30vw, 24rem); line-height: .8; letter-spacing: -.04em;
+    color: rgba(255,248,239,.07); white-space: nowrap; user-select: none; }
+  /* scroll cue */
+  .hero-cue { position: absolute; left: 50%; bottom: 26px; z-index: 3; transform: translateX(-50%);
+    font-family: var(--mono); font-size: .68rem; letter-spacing: 3px; text-transform: uppercase;
+    color: rgba(255,248,239,.8); display: grid; gap: 8px; justify-items: center; }
+  .hero-cue .ln { width: 1px; height: 34px; background: linear-gradient(rgba(255,248,239,.7), transparent);
+    animation: cueDrop 1.9s cubic-bezier(.7,0,.3,1) infinite; transform-origin: top; }
+  @keyframes cueDrop { 0%,100%{ transform: scaleY(.35); opacity:.4 } 50%{ transform: scaleY(1); opacity:1 } }
+  .palm { position: absolute; font-size: 7rem; opacity: .18; user-select: none; z-index: 2; pointer-events: none; will-change: transform; }
+  .palm.p1 { top: 7vh; right: 5vw; transform: rotate(8deg); }
+  .palm.p2 { bottom: 6vh; left: 3vw; font-size: 5rem; transform: rotate(-12deg); }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: .8rem; letter-spacing: 2px; text-transform: uppercase; background: rgba(26,14,3,.46); border: 1px solid rgba(255,255,255,.18); padding: 6px 14px; border-radius: 999px; backdrop-filter: blur(5px); }
   .hero h1 { font-size: clamp(2.4rem, 7vw, 4.6rem); font-weight: 900; line-height: 1.04; margin: 18px 0 6px; text-shadow: 0 4px 24px rgba(120,50,0,.3); }
   .hero h1 .scriptline { font-style: italic; font-weight: 500; font-size: .5em; display: block; opacity: .95; }
   .hero-sub { font-size: 1.05rem; max-width: 640px; opacity: .95; }
   .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
-  .chip { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.28); padding: 8px 15px; border-radius: 999px; font-size: .86rem; font-weight: 500; backdrop-filter: blur(4px); display: inline-flex; gap: 7px; align-items: center; }
+  .chip { background: rgba(26,14,3,.42); border: 1px solid rgba(255,255,255,.22); padding: 8px 15px; border-radius: 999px; font-size: .86rem; font-weight: 500; backdrop-filter: blur(5px); display: inline-flex; gap: 7px; align-items: center; }
 
   /* countdown */
   .countdown { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
-  .cd-box { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.3); border-radius: 16px; padding: 12px 18px; min-width: 78px; text-align: center; backdrop-filter: blur(6px); }
+  .cd-box { background: rgba(26,14,3,.44); border: 1px solid rgba(255,255,255,.24); border-radius: 16px; padding: 12px 18px; min-width: 78px; text-align: center; backdrop-filter: blur(6px); }
   .cd-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2rem; line-height: 1; }
   .cd-label { font-size: .68rem; letter-spacing: 1.5px; text-transform: uppercase; opacity: .85; margin-top: 5px; }
   .cd-tag { margin-top: 14px; font-size: .92rem; font-weight: 600; }
 
-  /* ---------- SECTION ---------- */
-  section { padding: 56px 0; }
+  /* ---------- SECTION → roadbook "page" floating on the living sky ---------- */
+  /* hero is a <header>, scene bands are .scene — every other <section> is a page */
+  section:not(.scene) {
+    position: relative; z-index: var(--z-page);
+    max-width: var(--sheet); margin: clamp(18px,3.5vw,38px) auto;
+    background: var(--paper); border-radius: 26px;
+    border: 1px solid color-mix(in srgb, var(--line) 78%, transparent);
+    box-shadow: var(--page-shadow), var(--shadow);
+    padding: clamp(34px,5vw,62px) 0;
+  }
+  section:not(.scene) > .wrap { max-width: 100%; padding-inline: clamp(20px,4.5vw,54px); }
+  @media (max-width: 1260px) { section:not(.scene) { margin-inline: clamp(12px,2.6vw,26px); } }
+  @media (max-width: 600px) { section:not(.scene) { border-radius: 20px; margin-inline: 10px; padding: 30px 0; } }
   .sec-head { margin-bottom: 28px; }
   .sec-kicker { color: var(--sun-deep); font-family: 'Playfair Display', 'Noto Sans SC', serif; font-style: italic; font-weight: 500; font-size: 1.06rem; letter-spacing: .1px; }
   .sec-head h2 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 800; margin-top: 4px; }
@@ -336,13 +389,15 @@
   .progress-fill { height: 100%; background: linear-gradient(90deg, var(--leaf), var(--amber)); width: 0; transition: width .4s; }
 
   /* ---------- FOOTER ---------- */
-  footer { background: var(--ink); color: var(--paper); padding: 40px 0; margin-top: 30px; text-align: center; }
+  footer { position: relative; z-index: var(--z-page);
+    background: var(--ink); color: var(--paper); padding: 40px 0; margin-top: 30px; text-align: center; }
   :root[data-theme="dark"] footer { background: #0d0a07; }
   footer .f-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; }
   footer p { opacity: .7; font-size: .84rem; margin-top: 8px; }
 
-  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1); }
-  .reveal.in { opacity: 1; transform: none; }
+  /* Reveals are now GSAP-driven (it sets the from-state at runtime), so content is
+     visible by default — no opacity gate. If JS/GSAP never runs, nothing is hidden.
+     GSAP manages will-change during the tween, so we don't pin permanent layers here. */
 
   /* ---------- DAY NUMBER ACCENT (replaces the old side-stripe) ---------- */
   .day-num { position: relative; padding-left: 13px; }
@@ -449,9 +504,128 @@
     .cd-num { font-size: 1.6rem; }
   }
   @media (max-width: 380px) { .nav-grid { grid-template-columns: 1fr; } }
+
+  /* ============================================================
+     MONO TELEMETRY LAYER — the trip's data voice (co-driver's logbook).
+     Numbers, times, distances, coordinates & romanized subtitles run
+     monospace; prose & display stay Playfair / Work Sans. ============ */
+  .eyebrow, .seg-clock, .day-num small, .day-date, .cd-label,
+  .pt-en, .c-en, .day-en, .nm-en, .vibe, .c-area, .seg-meta,
+  .tag.price, .charge-card .c-area, .zone-legend span, .lh-sub,
+  .ni-en, .brand-sub, .lb-en, .lb-counter, .vlog-list .vc {
+    font-family: var(--mono); font-feature-settings: "tnum" 1; letter-spacing: -.01em;
+  }
+  .eyebrow { letter-spacing: 1.5px; font-weight: 500; }
+  .cd-num { font-family: var(--mono); font-weight: 700; font-variant-numeric: tabular-nums;
+    font-size: 2rem; line-height: 1; letter-spacing: -.02em; }
+  .lh-stats b { font-family: var(--mono); font-variant-numeric: tabular-nums; font-weight: 700; }
+  .seg-time { font-variant-numeric: tabular-nums; }
+  .plan-steps li .seq { font-family: var(--mono); }
+  .num-pin { font-family: var(--mono); }
+
+  /* ============================================================
+     STICKY PLAN SWITCHER — the A/B/C control "follows" you while you
+     read the day-by-day timeline (position: sticky). =============== */
+  .plan-rail {
+    position: sticky; top: 70px; z-index: var(--z-sticky);
+    margin: 4px auto 22px; border-radius: 999px;
+    background: color-mix(in srgb, var(--paper) 86%, transparent);
+    backdrop-filter: blur(14px) saturate(1.25);
+    border: 1px solid var(--line); box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 16px;
+    flex-wrap: wrap;
+  }
+  .plan-rail .pr-label { font-family: var(--mono); font-size: .68rem; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--ink-soft); margin-right: 2px; white-space: nowrap; }
+  .plan-rail .pr-tabs { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
+  .pr-tab { cursor: pointer; font-family: inherit; font-weight: 700; font-size: .82rem;
+    border: 1.5px solid var(--line); background: var(--card); color: var(--ink-soft);
+    padding: 8px 18px; min-height: 44px; display: inline-flex; align-items: center;
+    border-radius: 999px; white-space: nowrap;
+    transition: transform .2s cubic-bezier(.22,1,.36,1), color .2s, border-color .2s, background .2s; }
+  .pr-tab:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--sun) 55%, var(--line)); color: var(--ink); }
+  .pr-tab.on { background: linear-gradient(135deg, var(--sun), var(--sun-deep)); color: #fff;
+    border-color: transparent; box-shadow: 0 6px 16px -8px rgba(242,102,10,.7); }
+  .pr-pace { font-family: var(--mono); font-size: .72rem; color: var(--ink-soft);
+    white-space: nowrap; padding-right: 6px; }
+  @media (max-width: 620px) { .plan-rail { top: 66px; } .pr-pace { display: none; } }
+
+  /* ============================================================
+     SCENE-BREAK BANDS — full-bleed "chapters" where the living sky
+     scrolls behind a pinned mono telemetry caption (ScrollTrigger pin
+     => position:fixed). grid + z-index supply the editorial depth. === */
+  .scene {
+    position: relative; z-index: var(--z-scene);
+    min-height: 86vh; display: grid; grid-template-columns: 1fr; place-items: center;
+    padding: 12vh 22px; isolation: isolate;
+  }
+  .scene > * { grid-area: 1 / 1; }                 /* stack layers for depth */
+  .scene::before {                                  /* readability scrim — covers the caption box, not just center */
+    content: ""; align-self: stretch; justify-self: stretch; z-index: 0;
+    background: radial-gradient(92% 78% at 50% 46%, rgba(18,10,2,.66) 0%, rgba(18,10,2,.46) 46%, transparent 88%);
+  }
+  .scene-inner { position: relative; z-index: 2; max-width: 760px; text-align: center; color: #fff8ef; }
+  .scene-no { font-family: var(--mono); font-size: .72rem; letter-spacing: 4px; text-transform: uppercase;
+    color: rgba(255,248,239,.95); text-shadow: 0 1px 10px rgba(20,10,0,.6); }
+  .scene-no .rule { display: inline-block; width: 36px; height: 1px; vertical-align: middle;
+    margin: 0 12px; background: rgba(255,248,239,.6); }
+  .scene-title { font-family: 'Playfair Display','Noto Sans SC',serif; font-weight: 900;
+    font-size: clamp(2.2rem, 6.5vw, 4.6rem); line-height: 1.04; margin: 14px 0 12px;
+    text-wrap: balance; text-shadow: 0 2px 16px rgba(20,10,0,.6), 0 6px 34px rgba(60,24,0,.35); }
+  .scene-title .it { font-style: italic; font-weight: 500; }
+  .scene-sub { font-size: 1.02rem; color: rgba(255,248,239,.98); max-width: 560px; margin: 0 auto;
+    text-shadow: 0 2px 14px rgba(20,10,0,.7); }
+  .scene-tele { display: flex; flex-wrap: wrap; gap: 10px 22px; justify-content: center;
+    margin: 22px auto 0; max-width: 600px; font-family: var(--mono); font-size: .76rem; letter-spacing: .3px;
+    color: #fff8ef; text-shadow: 0 1px 10px rgba(20,10,0,.7); }
+  .scene-tele span { display: inline-flex; align-items: center; gap: 7px; }
+  .scene-tele b { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .scene-tele i { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); font-style: normal; }
+  /* full-bleed media layer if a scene ever carries a photo */
+  .scene-media { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%;
+    object-fit: cover; opacity: .5; }
+
+  /* hero meta chips: mono data, slightly tighter */
+  .hero-meta .chip { font-family: var(--mono); font-size: .8rem; letter-spacing: -.01em; }
+
+  /* parallax helpers (GSAP drives the transform) */
+  .par { will-change: transform; }
+
+  /* ============================================================
+     SCROLL-PROGRESS METER — a fixed "odometer" under the nav that fills
+     as the page (the road) scrolls beneath it. (ScrollTrigger + fixed) = */
+  .scroll-progress { position: fixed; top: 62px; left: 0; right: 0; height: 2px; z-index: 59;
+    transform: scaleX(0); transform-origin: left center; pointer-events: none;
+    background: linear-gradient(90deg, var(--sun), var(--amber), var(--leaf)); }
+  @media (prefers-reduced-motion: reduce) { .scroll-progress { transform: scaleX(0) !important; } }
+
+  /* nicer focus for the new mono controls */
+  .pr-tab:focus-visible { outline: 2.5px solid var(--sun-deep); outline-offset: 2px; }
+
+  /* ---------- FORCED COLORS (Windows High Contrast): drop the un-overridable sky ---------- */
+  @media (forced-colors: active){
+    #bg-canvas, .grain { display: none !important; }
+    body { background: Canvas !important; }
+    .hero::after, .scene::before { background: none !important; }
+    .hero, .scene-inner, .scene-no, .scene-title, .scene-sub, .scene-tele { color: CanvasText !important; text-shadow: none !important; }
+    .eyebrow, .chip, .cd-box, .lb-src.placeholder { background: Canvas !important; border: 1px solid CanvasText !important; }
+    .scroll-progress { background: Highlight !important; }
+  }
+  /* ---------- PREFERS-CONTRAST: more — strengthen the scrims behind sky text ---------- */
+  @media (prefers-contrast: more){
+    .hero::after { background:
+      linear-gradient(93deg, rgba(10,6,1,.82) 0%, rgba(10,6,1,.52) 44%, rgba(10,6,1,.2) 82%); }
+    .scene::before { background:
+      radial-gradient(100% 86% at 50% 46%, rgba(8,5,1,.84) 0%, rgba(8,5,1,.6) 55%, rgba(8,5,1,.22) 95%); }
+  }
 </style>
 </head>
 <body>
+
+<!-- LIVING GOLDEN-HOUR SKY (Three.js) + texture veil + scroll odometer -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <!-- NAV -->
 <nav>
@@ -476,8 +650,9 @@
 
 <!-- HERO -->
 <header class="hero" id="top">
-  <div class="palm p1">🌴</div>
-  <div class="palm p2">🌴</div>
+  <div class="hero-mark par" data-speed="0.12" aria-hidden="true">SoCal</div>
+  <div class="palm p1 par" data-speed="0.3" aria-hidden="true">🌴</div>
+  <div class="palm p2 par" data-speed="0.5" aria-hidden="true">🌴</div>
   <div class="wrap">
     <span class="eyebrow">🚗 Santa Clara → Anaheim → LA → San Diego</span>
     <h1>南加州亲子自驾<span class="scriptline">A Sunny SoCal Family Road Trip</span></h1>
@@ -496,6 +671,7 @@
     </div>
     <div class="cd-tag" id="cd-tag">距离出发还有… ✨</div>
   </div>
+  <div class="hero-cue" aria-hidden="true"><span>scroll</span><span class="ln"></span></div>
 </header>
 
 <!-- PLANS -->
@@ -513,14 +689,34 @@
 </section>
 
 <!-- ITINERARY -->
-<section id="itinerary" style="padding-top:8px">
+<section id="itinerary">
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-kicker">Day by Day</div>
       <h2>每日行程时间轴</h2>
       <p>点击每一天展开 / 收起。🌄 上午 · 🍽️ 午餐 · ☀️ 下午 · 🌙 晚餐 · 🏨 住宿。</p>
     </div>
+    <div class="plan-rail" id="planRail" role="group" aria-label="切换方案 Switch plan">
+      <span class="pr-label" aria-hidden="true">Plan</span>
+      <div class="pr-tabs" id="prTabs"></div>
+      <span class="pr-pace mono" id="prPace"></span>
+    </div>
     <div class="timeline" id="timeline"></div>
+  </div>
+</section>
+
+<!-- SCENE BREAK 01 · The Long Drive -->
+<section class="scene" id="scene-drive" aria-label="自驾全程 · The Long Drive">
+  <div class="scene-inner" data-pin>
+    <div class="scene-no">Chapter 01 <span class="rule"></span> On The Road</div>
+    <h2 class="scene-title">向南，追着<span class="it">阳光</span></h2>
+    <p class="scene-sub">从硅谷一路向南——I-5 穿过中央谷地，翻过 Grapevine，落进南加州的金色盆地。</p>
+    <div class="scene-tele">
+      <span><i></i>全程 <b>900+</b> mi</span>
+      <span><i></i><b>8</b> 天 7 晚</span>
+      <span><i></i><b>2</b> 次超充补能</span>
+      <span><i></i>Lost Hills · 世界最大 <b>164</b> 桩</span>
+    </div>
   </div>
 </section>
 
@@ -556,6 +752,21 @@
     <div class="plan-pick" id="planPick"></div>
     <button class="nav-btn" id="planGo">🪄 生成最优顺序 + 配餐</button>
     <div class="plan-out" id="planOut"></div>
+  </div>
+</section>
+
+<!-- SCENE BREAK 02 · Golden Hour -->
+<section class="scene" id="scene-golden" aria-label="黄金时刻 · Golden Hour">
+  <div class="scene-inner" data-pin>
+    <div class="scene-no">Chapter 02 <span class="rule"></span> Golden Hour</div>
+    <h2 class="scene-title">为孩子，<span class="it">慢下来</span></h2>
+    <p class="scene-sub">主题乐园的尖叫、悬崖上的日落、海湾边的海狮——南加州把最好的光，留给傍晚。</p>
+    <div class="scene-tele">
+      <span><i></i><b>23</b> 个打卡点</span>
+      <span><i></i><b>22</b> 家美食</span>
+      <span><i></i><b>9</b> 间咖啡馆</span>
+      <span><i></i>3 城 · LA · SD · OC</span>
+    </div>
   </div>
 </section>
 
@@ -1187,7 +1398,7 @@ function renderPlanTabs(){
   const box = document.getElementById('planTabs');
   box.innerHTML = Object.keys(PLAN_META).map(k=>{
     const p = PLAN_META[k];
-    return `<div class="plan-tab ${k===curPlan?'active':''}" data-plan="${k}">
+    return `<div class="plan-tab ${k===curPlan?'active':''}" data-plan="${k}" role="button" tabindex="0" aria-pressed="${k===curPlan}">
       ${p.rec?'<span class="rec-flag">★ 推荐 Recommended</span>':''}
       <div class="pt-name">Plan ${k} · ${p.name}</div>
       <div class="pt-en">${p.en}</div>
@@ -1195,14 +1406,37 @@ function renderPlanTabs(){
     </div>`;
   }).join('');
   box.querySelectorAll('.plan-tab').forEach(t=>{
-    t.onclick = ()=>{ curPlan = t.dataset.plan; renderPlanTabs(); renderTimeline();
-      if(window.drawTripMap) window.drawTripMap();
-      document.getElementById('planPace').textContent = PLAN_META[curPlan].pace;
-      setTimeout(()=>{ const d4=document.querySelector('.day[data-i="3"]');
-        if(d4){ d4.scrollIntoView({behavior:'smooth',block:'start'}); d4.classList.add('flash'); setTimeout(()=>d4.classList.remove('flash'),2000); } },80);
-    };
+    t.onclick = ()=> setPlan(t.dataset.plan);
+    t.onkeydown = e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setPlan(t.dataset.plan); } };
   });
-  document.getElementById('planPace').textContent = PLAN_META[curPlan].pace;
+}
+/* compact A/B/C switcher that sticks to the top of the itinerary */
+function renderPlanRail(){
+  const tabs = document.getElementById('prTabs');
+  if(!tabs) return;
+  tabs.innerHTML = Object.keys(PLAN_META).map(k=>
+    `<button class="pr-tab ${k===curPlan?'on':''}" data-plan="${k}" aria-pressed="${k===curPlan}" aria-label="方案 Plan ${k} · ${PLAN_META[k].name}">Plan ${k}</button>`).join('');
+  tabs.querySelectorAll('.pr-tab').forEach(b=> b.onclick = ()=> setPlan(b.dataset.plan));
+  const pace = document.getElementById('prPace');
+  if(pace) pace.textContent = PLAN_META[curPlan].pace;
+}
+/* single source of truth for switching plans (used by both controls) */
+function setPlan(k, opts){
+  opts = opts || {};
+  if(!PLAN_META[k]) return;
+  curPlan = k;
+  renderPlanTabs(); renderPlanRail(); renderTimeline();
+  const pp = document.getElementById('planPace'); if(pp) pp.textContent = PLAN_META[curPlan].pace;
+  if(window.drawTripMap) window.drawTripMap();
+  if(window.afterTimelineRender) window.afterTimelineRender();
+  if(opts.silent) return;
+  setTimeout(()=>{
+    const d4 = document.querySelector('.day[data-i="3"]');
+    if(!d4) return;
+    if(window.lenisScrollTo) window.lenisScrollTo(d4, {offset:-90});
+    else d4.scrollIntoView({behavior:'smooth', block:'start'});
+    d4.classList.add('flash'); setTimeout(()=>d4.classList.remove('flash'), 2000);
+  }, 90);
 }
 
 function segHTML(s){
@@ -1449,7 +1683,9 @@ function drawPlanRoute(anchor, ordered){
   });
   L.polyline(path, {color:'#e0273f', weight:4, opacity:.85}).addTo(_planLayer);
   _map.fitBounds(path, {padding:[55,55]});
-  document.getElementById('routemap').scrollIntoView({behavior:'smooth', block:'start'});
+  const rm = document.getElementById('routemap');
+  if(window.lenisScrollTo) window.lenisScrollTo(rm, {offset:-80});
+  else rm.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 /* countdown */
@@ -1484,11 +1720,7 @@ function initTheme(){
   };
 }
 
-/* reveal on scroll */
-function initReveal(){
-  const io = new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }),{threshold:.12});
-  document.querySelectorAll('.reveal, .sec-head').forEach(el=>{ el.classList.add('reveal'); io.observe(el); });
-}
+/* reveals are handled by GSAP ScrollTrigger (see the motion script below) */
 
 /* ---- NAV MENU ---- */
 const NAV = [
@@ -1528,9 +1760,315 @@ function initNav(){
 }
 
 /* init */
-renderPlanTabs(); renderTimeline(); renderSpots(); renderFood(); renderCafes(); renderCharging(); renderInfo(); renderPack(); renderPlanner();
+renderPlanTabs(); renderPlanRail(); renderTimeline(); renderSpots(); renderFood(); renderCafes(); renderCharging(); renderInfo(); renderPack(); renderPlanner();
+document.getElementById('planPace').textContent = PLAN_META[curPlan].pace;
 document.getElementById('planGo').onclick = generatePlan;
-initTheme(); initReveal(); initMap(); initLightbox(); initNav(); tick(); setInterval(tick,1000);
+initTheme(); initMap(); initLightbox(); initNav(); tick(); setInterval(tick,1000);
+</script>
+
+<!-- ============ SMOOTH SCROLL (Lenis) + CINEMATIC MOTION (GSAP ScrollTrigger) ============ -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function(){
+  const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasGSAP = typeof window.gsap !== 'undefined';
+
+  /* ---------- LENIS smooth scroll ---------- */
+  let lenis = null;
+  if(typeof window.Lenis !== 'undefined' && !REDUCE){
+    lenis = new Lenis({ duration: 1.05, lerp: 0.1, wheelMultiplier: 1, smoothWheel: true });
+    window.lenis = lenis;
+  }
+  /* programmatic-scroll helper the app code calls through */
+  window.lenisScrollTo = function(target, opts){
+    opts = opts || {};
+    if(lenis){ lenis.scrollTo(target, { offset: opts.offset || 0, duration: 1.0 }); }
+    else if(target && target.scrollIntoView){
+      target.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'start' });
+    }
+  };
+  /* in-page anchors (nav sheet, brand, etc.) ride Lenis with a nav offset */
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    const href = a.getAttribute('href');
+    if(!href || href.length < 2) return;
+    a.addEventListener('click', e=>{
+      const el = document.querySelector(href);
+      if(!el) return;
+      e.preventDefault();
+      window.lenisScrollTo(el, { offset: href === '#top' ? 0 : -72 });
+    });
+  });
+
+  if(!hasGSAP){ return; } /* libs blocked → page is fully usable, just no choreography */
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* drive ScrollTrigger from Lenis' clock */
+  if(lenis){
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((t)=> lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  /* pause Lenis while the native <dialog> lightbox is open (and restore after) */
+  const dlg = document.getElementById('lightbox');
+  if(dlg && lenis){
+    new MutationObserver(()=> dlg.open ? lenis.stop() : lenis.start())
+      .observe(dlg, { attributes:true, attributeFilter:['open'] });
+  }
+  /* let the Leaflet map own touch-drag without the page hijacking it */
+  document.querySelectorAll('#map').forEach(m=> m.setAttribute('data-lenis-prevent-touch',''));
+
+  if(REDUCE){ ScrollTrigger.refresh(); return; }  /* motion off, but Lenis-less page still works */
+
+  const EASE = 'power3.out';
+
+  /* ---------- HERO load choreography ---------- */
+  const heroTl = gsap.timeline({ defaults:{ ease: EASE } });
+  heroTl.from('.hero .eyebrow', { y: 24, opacity: 0, duration: .7 })
+        .from('.hero h1',       { y: 40, opacity: 0, duration: 1.0 }, '-=.45')
+        .from('.hero-sub',      { y: 24, opacity: 0, duration: .7 }, '-=.6')
+        .from('.hero-meta .chip',{ y: 18, opacity: 0, duration: .5, stagger: .07 }, '-=.4')
+        .from('.cd-box',        { y: 22, opacity: 0, scale: .9, duration: .55, stagger: .08 }, '-=.3')
+        .from('.cd-tag',        { opacity: 0, duration: .5 }, '-=.2')
+        .from('.hero-mark',     { opacity: 0, scale: 1.08, duration: 1.4 }, 0)
+        .from('.hero-cue',      { opacity: 0, duration: .6 }, '-=.2');
+
+  /* parallax: hero depth layers drift as you scroll past the opening scene */
+  gsap.utils.toArray('.hero .par').forEach(el=>{
+    const speed = parseFloat(el.dataset.speed || '0.2');
+    gsap.to(el, { yPercent: speed * 100, ease:'none',
+      scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub: true } });
+  });
+
+  /* ---------- SECTION HEADERS: kicker slide + headline mask reveal ---------- */
+  gsap.utils.toArray('.sec-head').forEach(head=>{
+    const tl = gsap.timeline({ scrollTrigger:{ trigger: head, start:'top 82%' }, defaults:{ ease: EASE } });
+    const kicker = head.querySelector('.sec-kicker');
+    const h2 = head.querySelector('h2');
+    const p = head.querySelector('p');
+    if(kicker) tl.from(kicker, { x: -18, opacity: 0, duration: .55 });
+    if(h2) tl.from(h2, { y: 28, opacity: 0, duration: .9,
+      clipPath: 'inset(0 0 100% 0)' }, '-=.3');
+    if(p) tl.from(p, { y: 16, opacity: 0, duration: .6 }, '-=.45');
+  });
+
+  /* ---------- CARD GRIDS: batched stagger ----------
+     set the start state, then animate TO an explicit end (opacity 1) once —
+     never gsap.from, which would re-capture a partial value if re-fired. */
+  const cardSel = ['#spotGrid .card', '#foodGrid .card', '#cafeGrid .card', '#chargeGrid .card',
+                   '#infoGrid .info-card', '#packGrid .check-col', '#vlogList a', '.plan-tab'];
+  const cardEls = gsap.utils.toArray(cardSel.join(','));
+  gsap.set(cardEls, { opacity: 0, y: 34, scale: .97 });
+  ScrollTrigger.batch(cardEls, {
+    start: 'top 90%', once: true,
+    onEnter: b => gsap.to(b, { opacity: 1, y: 0, scale: 1, duration: .6, ease: EASE, stagger: .06, overwrite: true }),
+  });
+
+  /* ---------- TIMELINE DAYS: rise in (re-armable — #timeline re-renders on plan switch) ---------- */
+  let _dayBatch = [];
+  function armDayReveal(){
+    _dayBatch.forEach(t => t.kill());
+    const days = gsap.utils.toArray('.day');
+    const line = window.innerHeight * 0.92;
+    // pre-hide only days still below the reveal line; days already in/above view stay
+    // visible so a re-arm mid-page (after a plan switch) never strands them invisible.
+    days.forEach(d => gsap.set(d, d.getBoundingClientRect().top > line ? { opacity: 0, y: 40 } : { opacity: 1, y: 0 }));
+    _dayBatch = ScrollTrigger.batch(days, {
+      start: 'top 92%', once: true,
+      onEnter: b => gsap.to(b, { opacity: 1, y: 0, duration: .65, ease: EASE, stagger: .07, overwrite: true }),
+    });
+    ScrollTrigger.refresh();
+  }
+  armDayReveal();
+  window.afterTimelineRender = armDayReveal;   // setPlan() calls this after re-rendering days
+
+  /* the world's-largest charger + source panels swoop in */
+  ['.xhs-sources', '.lost-hills', '.vlog-box'].forEach(sel=>{
+    const el = document.querySelector(sel); if(!el) return;
+    gsap.from(el, { y: 40, opacity: 0, scale: .98, duration: .8, ease: EASE,
+      scrollTrigger:{ trigger: el, start:'top 85%' } });
+  });
+
+  /* ---------- SCENE BREAKS: entrance for all sizes ---------- */
+  gsap.utils.toArray('.scene').forEach(scene=>{
+    const tl = gsap.timeline({ scrollTrigger:{ trigger: scene, start:'top 72%' }, defaults:{ ease: EASE } });
+    tl.from(scene.querySelector('.scene-no'),   { y: 18, opacity: 0, duration: .6 })
+      .from(scene.querySelector('.scene-title'),{ y: 30, opacity: 0, duration: .9 }, '-=.3')
+      .from(scene.querySelector('.scene-sub'),  { y: 18, opacity: 0, duration: .6 }, '-=.5')
+      .from(scene.querySelectorAll('.scene-tele span'), { y: 14, opacity: 0, duration: .5, stagger: .1 }, '-=.35');
+  });
+  /* PIN the caption on screen while the page scrolls beneath, then dissolve it as the
+     next page rises (ScrollTrigger ⇒ position:fixed). Desktop only — mobile stays quick. */
+  gsap.matchMedia().add('(min-width: 900px)', ()=>{
+    gsap.utils.toArray('.scene').forEach(scene=>{
+      const inner = scene.querySelector('[data-pin]'); if(!inner) return;
+      const pinTl = gsap.timeline({ scrollTrigger:{ trigger: scene, start:'top top', end:'+=55%',
+        pin: inner, pinSpacing: true, anticipatePin: 1, scrub: .4 } });
+      pinTl.to(inner, { duration: .62 }, 0)                       // hold steady …
+           .to(inner, { autoAlpha: 0, y: -30, duration: .38 }, .62); // … then dissolve out
+    });
+  });
+
+  /* ---------- FIXED SCROLL ODOMETER under the nav ---------- */
+  const prog = document.getElementById('scrollProgress');
+  if(prog){
+    gsap.to(prog, { scaleX: 1, ease:'none',
+      scrollTrigger:{ start: 0, end: 'max', scrub: .3 } });
+  }
+
+  /* recompute once everything (fonts, map, images) has settled */
+  window.addEventListener('load', ()=> ScrollTrigger.refresh());
+})();
+</script>
+
+<!-- ============ THREE.JS · LIVING GOLDEN-HOUR SKY (pointer-reactive texture) ============ -->
+<script type="module">
+(async () => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas = document.getElementById('bg-canvas');
+  if(!canvas) return;
+  let THREE;
+  try { THREE = await import('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js'); }
+  catch(e){ /* no WebGL/module → CSS --sky gradient stays as the backdrop */ return; }
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias:false, alpha:true, powerPreference:'low-power' });
+  } catch(e){ return; }
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+  const uniforms = {
+    uTime:   { value: 0 },
+    uRes:    { value: new THREE.Vector2(1,1) },
+    uMouse:  { value: new THREE.Vector2(0.72, 0.74) },
+    uTarget: { value: new THREE.Vector2(0.72, 0.74) },
+    uDark:   { value: 0 },
+  };
+
+  const material = new THREE.ShaderMaterial({
+    uniforms,
+    vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position, 1.0); }`,
+    fragmentShader: `
+      precision highp float;
+      varying vec2 vUv;
+      uniform float uTime; uniform vec2 uRes; uniform vec2 uMouse; uniform float uDark;
+
+      // value noise + fbm  → the "texture"
+      float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+      float noise(vec2 p){
+        vec2 i = floor(p), f = fract(p);
+        float a = hash(i), b = hash(i+vec2(1.,0.)), c = hash(i+vec2(0.,1.)), d = hash(i+vec2(1.,1.));
+        vec2 u = f*f*(3.0-2.0*f);
+        return mix(mix(a,b,u.x), mix(c,d,u.x), u.y);
+      }
+      float fbm(vec2 p){
+        float v = 0.0, a = 0.5;
+        for(int i=0;i<3;i++){ v += a*noise(p); p *= 2.02; a *= 0.5; }
+        return v;
+      }
+      void main(){
+        vec2 uv = vUv;
+        float agp = uRes.x / max(uRes.y, 1.0);
+        vec2 p = vec2(uv.x*agp, uv.y);
+
+        // slow drifting cloud/dune texture
+        vec2 q = p*2.2 + vec2(uTime*0.015, uTime*0.006);
+        float f = fbm(q + fbm(q + vec2(0.0, uTime*0.02)));
+        float bands = fbm(p*vec2(1.2,3.0) - vec2(0.0, uTime*0.03));
+
+        // sun glow follows the pointer (clamped so the sky never blows out to white behind text)
+        vec2 sun = vec2(uMouse.x*agp, uMouse.y);
+        float d = distance(p, sun);
+        float glow = min(exp(-d*2.6) * 1.05 + exp(-d*7.0)*0.5, 0.62);
+
+        vec3 col;
+        if(uDark > 0.5){
+          vec3 top = vec3(0.16,0.11,0.22), mid = vec3(0.42,0.20,0.16), low = vec3(0.07,0.05,0.04);
+          col = mix(low, top, smoothstep(0.0,1.0,uv.y));
+          col = mix(col, mid, glow*0.7);
+          col += vec3(0.5,0.29,0.11) * glow * 0.45;
+          col = mix(col, col*1.18, f*0.5);
+          col -= bands*0.04;
+        } else {
+          vec3 top = vec3(0.97,0.72,0.36), mid = vec3(0.95,0.5,0.18), low = vec3(0.72,0.25,0.05);
+          col = mix(low, top, smoothstep(-0.1,1.05,uv.y));
+          col = mix(col, vec3(0.99,0.84,0.52), glow);
+          col = mix(col, col*1.1, f*0.45);
+          col -= bands*0.05;
+        }
+        // film grain (the raw "texture" finish)
+        float g = hash(uv*uRes.xy*0.5 + fract(uTime));
+        col += (g-0.5)*0.045;
+        gl_FragColor = vec4(col, 1.0);
+      }`,
+  });
+
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2), material));
+
+  function resize(){
+    // render at a slightly reduced internal resolution — the sky is low-frequency,
+    // so this halves fragment cost with no visible loss (DPR still capped).
+    const pr = Math.min(window.devicePixelRatio || 1, 1.25) * 0.82;
+    const w = window.innerWidth, h = window.innerHeight;
+    renderer.setPixelRatio(pr);
+    renderer.setSize(w, h, false);
+    uniforms.uRes.value.set(w * pr, h * pr);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const clock = new THREE.Clock();
+  let running = true, rafId = null, lastInteract = 0, lastDraw = -1;
+  const IDLE_FPS = 18;            // idle: the sky drifts slowly, so low fps is imperceptible
+  const bump = () => { lastInteract = clock.getElapsedTime(); };
+
+  // pointer drives the sun (lerped). No motion under prefers-reduced-motion.
+  if(!reduce){
+    window.addEventListener('pointermove', e=>{
+      uniforms.uTarget.value.set(e.clientX / window.innerWidth, 1.0 - e.clientY / window.innerHeight); bump();
+    }, { passive:true });
+    window.addEventListener('deviceorientation', e=>{
+      if(e.gamma==null) return;
+      uniforms.uTarget.value.set(0.5 + (e.gamma/90)*0.4, 0.4 + (-(e.beta||0)/90)*0.3); bump();
+    }, { passive:true });
+    window.addEventListener('scroll', bump, { passive:true });
+  }
+
+  function paint(){
+    const m = uniforms.uMouse.value, t = uniforms.uTarget.value;
+    m.x += (t.x - m.x) * 0.05; m.y += (t.y - m.y) * 0.05;
+    uniforms.uTime.value = clock.getElapsedTime();
+    renderer.render(scene, camera);
+  }
+  function loop(){
+    if(!running || reduce){ rafId = null; return; }
+    rafId = requestAnimationFrame(loop);
+    const now = clock.getElapsedTime();
+    const active = (now - lastInteract) < 1.2;            // full rate ~1.2s after interaction
+    if(!active && (now - lastDraw) < 1 / IDLE_FPS) return; // else throttle to IDLE_FPS
+    lastDraw = now; paint();
+  }
+  // exactly one rAF chain across any hide/show race (rafId===null guard)
+  document.addEventListener('visibilitychange', ()=>{
+    running = !document.hidden;
+    if(running && !reduce && rafId === null){ bump(); loop(); }
+  });
+
+  function syncTheme(){
+    uniforms.uDark.value = document.documentElement.dataset.theme === 'dark' ? 1 : 0;
+    if(reduce) paint();                                    // static path needs an explicit repaint
+  }
+  syncTheme();
+  new MutationObserver(syncTheme).observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
+
+  if(reduce){ uniforms.uTime.value = 8.0; paint(); }       // one static golden frame
+  else { bump(); loop(); }
+})();
 </script>
 </body>
 </html>
